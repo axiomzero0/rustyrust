@@ -1,0 +1,741 @@
+{
+  "version": 1,
+  "scenarios": [
+    {
+      "rule": "CEP-LINT-FILE-HEADER",
+      "name": "missing_header",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "fn one() { a(); }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-FILE-HEADER",
+      "name": "complete_header",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-FUNC-BLOCK",
+      "name": "unblocked_function",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn two_stmts() {\n    a();\n    b();\n}\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-FUNC-BLOCK",
+      "name": "blocked_function",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// CEP:WHAT: Runs the sample statements.\n// CEP:WHY: Demonstrates a complete function block.\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\nfn two_stmts() {\n    a();\n    b();\n}\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-STATUS-VALUE",
+      "name": "bad_status",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: finished\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-STATUS-VALUE",
+      "name": "good_status",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-TODO-OWNER",
+      "name": "anonymous_todo",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// TODO: fix later.\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-TODO-OWNER",
+      "name": "owned_todo",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// CEP:TODO(alice): CEP-12: fix later.\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-STUB-DECL",
+      "name": "unowned_stub",
+      "expected": 2,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: stub\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-STUB-DECL",
+      "name": "owned_stub",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: stub\n// CEP:OWNER: alice\n// CEP:TICKET: CEP-13\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-PLACEHOLDER-COMMENT",
+      "name": "marker_comment",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// not implemented yet.\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-PLACEHOLDER-COMMENT",
+      "name": "declared_status_line",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// CEP:STATUS: stub\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-PLACEHOLDER-TEXT",
+      "name": "marker_string",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn one() { let s = \"not implemented\"; }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-PLACEHOLDER-TEXT",
+      "name": "clean_string",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn one() { let s = \"ready\"; }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-MAGIC-NUMBER",
+      "name": "bare_literal",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn one() { let x = 42; }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-MAGIC-NUMBER",
+      "name": "const_literal",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nconst ANSWER: i64 = 42;\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-MACRO-PREFIX",
+      "name": "unprefixed_macro",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nmacro_rules! my_macro { () => {}; }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-MACRO-PREFIX",
+      "name": "prefixed_macro",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nmacro_rules! CEP_MY_MACRO { () => {}; }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-HOT-BANNED",
+      "name": "banned_in_hot",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-0\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n\nfn one() { panic!(); }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-HOT-BANNED",
+      "name": "clean_hot",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-0\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n\nfn one() { a(); }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-STUB-BODY",
+      "name": "empty_body",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn empty() {}\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-STUB-BODY",
+      "name": "declared_stub_body",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// CEP:WHAT: Runs the sample statements.\n// CEP:WHY: Demonstrates an owned stub declaration.\n// CEP:ID: CS-a99\n// CEP:STATUS: stub\n// CEP:OWNER: alice\n// CEP:TICKET: CEP-13\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\nfn empty() {}\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-EMPTY-CATCH",
+      "name": "empty_catch",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn one() { try { g(); } catch (E) { } }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-EMPTY-CATCH",
+      "name": "handled_catch",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn one() { try { g(); } catch (E) { log(); } }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-EMPTY-BRANCH",
+      "name": "empty_if",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn one() { if x { } }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-EMPTY-BRANCH",
+      "name": "populated_if",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn one() { if x { g(); } }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-CONSTANT-RETURN",
+      "name": "constant_true",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn flag() -> bool { true }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-CONSTANT-RETURN",
+      "name": "computed_return",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn flag() -> bool { other() }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-NAMING-TYPE",
+      "name": "bad_type_name",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nstruct bad_name { }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-NAMING-TYPE",
+      "name": "good_type_name",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nstruct GoodName { }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-NAMING-FUNC",
+      "name": "bad_func_name",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn BadName() { a(); }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-NAMING-FUNC",
+      "name": "good_func_name",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn good_name() { a(); }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-COMMENTED-CODE",
+      "name": "commented_assignment",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// x = 5;\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-COMMENTED-CODE",
+      "name": "prose_comment",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// The value of x equals five.\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-DOC-SYNC",
+      "name": "version_mismatch",
+      "expected": 1,
+      "cross_file": true,
+      "files": [
+        {
+          "path": "standards.md",
+          "content": "# CEP&CC 0.4\nVersion: **0.5**\n\n### Rule CEP-LINT-FILE-HEADER\n### Rule CEP-LINT-FUNC-BLOCK\n### Rule CEP-LINT-STATUS-VALUE\n### Rule CEP-LINT-TODO-OWNER\n### Rule CEP-LINT-STUB-DECL\n### Rule CEP-LINT-PLACEHOLDER-COMMENT\n### Rule CEP-LINT-PLACEHOLDER-TEXT\n### Rule CEP-LINT-MAGIC-NUMBER\n### Rule CEP-LINT-MACRO-PREFIX\n### Rule CEP-LINT-HOT-BANNED\n### Rule CEP-LINT-STUB-BODY\n### Rule CEP-LINT-EMPTY-CATCH\n### Rule CEP-LINT-EMPTY-BRANCH\n### Rule CEP-LINT-CONSTANT-RETURN\n### Rule CEP-LINT-NAMING-TYPE\n### Rule CEP-LINT-NAMING-FUNC\n### Rule CEP-LINT-COMMENTED-CODE\n### Rule CEP-LINT-DOC-SYNC\n### Rule CEP-LINT-ATOMIC-FILE\n### Rule CEP-LINT-DOC-ID\n### Rule CEP-LINT-DOC-FILE\n### Rule CEP-LINT-DOC-TIERS\n### Rule CEP-LINT-DOC-INQUISITION\n### Rule CEP-LINT-SECRET-SCAN\n### Rule CEP-LINT-UNSAFE-DOC\n### Rule CEP-LINT-HUNT-RECEIPT\n### Rule CEP-LINT-HUNTER-RECEIPT\n"
+        },
+        {
+          "path": "docs/registry.json",
+          "content": "{\n  \"version\": 1,\n  \"functions\": []\n}"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-DOC-SYNC",
+      "name": "version_agrees",
+      "expected": 0,
+      "cross_file": true,
+      "files": [
+        {
+          "path": "standards.md",
+          "content": "# CEP&CC 0.4\nVersion: **0.4**\n\n### Rule CEP-LINT-FILE-HEADER\n### Rule CEP-LINT-FUNC-BLOCK\n### Rule CEP-LINT-STATUS-VALUE\n### Rule CEP-LINT-TODO-OWNER\n### Rule CEP-LINT-STUB-DECL\n### Rule CEP-LINT-PLACEHOLDER-COMMENT\n### Rule CEP-LINT-PLACEHOLDER-TEXT\n### Rule CEP-LINT-MAGIC-NUMBER\n### Rule CEP-LINT-MACRO-PREFIX\n### Rule CEP-LINT-HOT-BANNED\n### Rule CEP-LINT-STUB-BODY\n### Rule CEP-LINT-EMPTY-CATCH\n### Rule CEP-LINT-EMPTY-BRANCH\n### Rule CEP-LINT-CONSTANT-RETURN\n### Rule CEP-LINT-NAMING-TYPE\n### Rule CEP-LINT-NAMING-FUNC\n### Rule CEP-LINT-COMMENTED-CODE\n### Rule CEP-LINT-DOC-SYNC\n### Rule CEP-LINT-ATOMIC-FILE\n### Rule CEP-LINT-DOC-ID\n### Rule CEP-LINT-DOC-FILE\n### Rule CEP-LINT-DOC-TIERS\n### Rule CEP-LINT-DOC-INQUISITION\n### Rule CEP-LINT-SECRET-SCAN\n### Rule CEP-LINT-UNSAFE-DOC\n### Rule CEP-LINT-HUNT-RECEIPT\n### Rule CEP-LINT-HUNTER-RECEIPT\n"
+        },
+        {
+          "path": "docs/registry.json",
+          "content": "{\n  \"version\": 1,\n  \"functions\": []\n}"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-ATOMIC-FILE",
+      "name": "oversized_file",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// filler line 1 for the atomic file limit scenario.\n// filler line 2 for the atomic file limit scenario.\n// filler line 3 for the atomic file limit scenario.\n// filler line 4 for the atomic file limit scenario.\n// filler line 5 for the atomic file limit scenario.\n// filler line 6 for the atomic file limit scenario.\n// filler line 7 for the atomic file limit scenario.\n// filler line 8 for the atomic file limit scenario.\n// filler line 9 for the atomic file limit scenario.\n// filler line 10 for the atomic file limit scenario.\n// filler line 11 for the atomic file limit scenario.\n// filler line 12 for the atomic file limit scenario.\n// filler line 13 for the atomic file limit scenario.\n// filler line 14 for the atomic file limit scenario.\n// filler line 15 for the atomic file limit scenario.\n// filler line 16 for the atomic file limit scenario.\n// filler line 17 for the atomic file limit scenario.\n// filler line 18 for the atomic file limit scenario.\n// filler line 19 for the atomic file limit scenario.\n// filler line 20 for the atomic file limit scenario.\n// filler line 21 for the atomic file limit scenario.\n// filler line 22 for the atomic file limit scenario.\n// filler line 23 for the atomic file limit scenario.\n// filler line 24 for the atomic file limit scenario.\n// filler line 25 for the atomic file limit scenario.\n// filler line 26 for the atomic file limit scenario.\n// filler line 27 for the atomic file limit scenario.\n// filler line 28 for the atomic file limit scenario.\n// filler line 29 for the atomic file limit scenario.\n// filler line 30 for the atomic file limit scenario.\n// filler line 31 for the atomic file limit scenario.\n// filler line 32 for the atomic file limit scenario.\n// filler line 33 for the atomic file limit scenario.\n// filler line 34 for the atomic file limit scenario.\n// filler line 35 for the atomic file limit scenario.\n// filler line 36 for the atomic file limit scenario.\n// filler line 37 for the atomic file limit scenario.\n// filler line 38 for the atomic file limit scenario.\n// filler line 39 for the atomic file limit scenario.\n// filler line 40 for the atomic file limit scenario.\n// filler line 41 for the atomic file limit scenario.\n// filler line 42 for the atomic file limit scenario.\n// filler line 43 for the atomic file limit scenario.\n// filler line 44 for the atomic file limit scenario.\n// filler line 45 for the atomic file limit scenario.\n// filler line 46 for the atomic file limit scenario.\n// filler line 47 for the atomic file limit scenario.\n// filler line 48 for the atomic file limit scenario.\n// filler line 49 for the atomic file limit scenario.\n// filler line 50 for the atomic file limit scenario.\n// filler line 51 for the atomic file limit scenario.\n// filler line 52 for the atomic file limit scenario.\n// filler line 53 for the atomic file limit scenario.\n// filler line 54 for the atomic file limit scenario.\n// filler line 55 for the atomic file limit scenario.\n// filler line 56 for the atomic file limit scenario.\n// filler line 57 for the atomic file limit scenario.\n// filler line 58 for the atomic file limit scenario.\n// filler line 59 for the atomic file limit scenario.\n// filler line 60 for the atomic file limit scenario.\n// filler line 61 for the atomic file limit scenario.\n// filler line 62 for the atomic file limit scenario.\n// filler line 63 for the atomic file limit scenario.\n// filler line 64 for the atomic file limit scenario.\n// filler line 65 for the atomic file limit scenario.\n// filler line 66 for the atomic file limit scenario.\n// filler line 67 for the atomic file limit scenario.\n// filler line 68 for the atomic file limit scenario.\n// filler line 69 for the atomic file limit scenario.\n// filler line 70 for the atomic file limit scenario.\n// filler line 71 for the atomic file limit scenario.\n// filler line 72 for the atomic file limit scenario.\n// filler line 73 for the atomic file limit scenario.\n// filler line 74 for the atomic file limit scenario.\n// filler line 75 for the atomic file limit scenario.\n// filler line 76 for the atomic file limit scenario.\n// filler line 77 for the atomic file limit scenario.\n// filler line 78 for the atomic file limit scenario.\n// filler line 79 for the atomic file limit scenario.\n// filler line 80 for the atomic file limit scenario.\n// filler line 81 for the atomic file limit scenario.\n// filler line 82 for the atomic file limit scenario.\n// filler line 83 for the atomic file limit scenario.\n// filler line 84 for the atomic file limit scenario.\n// filler line 85 for the atomic file limit scenario.\n// filler line 86 for the atomic file limit scenario.\n// filler line 87 for the atomic file limit scenario.\n// filler line 88 for the atomic file limit scenario.\n// filler line 89 for the atomic file limit scenario.\n// filler line 90 for the atomic file limit scenario.\n// filler line 91 for the atomic file limit scenario.\n// filler line 92 for the atomic file limit scenario.\n// filler line 93 for the atomic file limit scenario.\n// filler line 94 for the atomic file limit scenario.\n// filler line 95 for the atomic file limit scenario.\n// filler line 96 for the atomic file limit scenario.\n// filler line 97 for the atomic file limit scenario.\n// filler line 98 for the atomic file limit scenario.\n// filler line 99 for the atomic file limit scenario.\n// filler line 100 for the atomic file limit scenario.\n// filler line 101 for the atomic file limit scenario.\n// filler line 102 for the atomic file limit scenario.\n// filler line 103 for the atomic file limit scenario.\n// filler line 104 for the atomic file limit scenario.\n// filler line 105 for the atomic file limit scenario.\n// filler line 106 for the atomic file limit scenario.\n// filler line 107 for the atomic file limit scenario.\n// filler line 108 for the atomic file limit scenario.\n// filler line 109 for the atomic file limit scenario.\n// filler line 110 for the atomic file limit scenario.\n// filler line 111 for the atomic file limit scenario.\n// filler line 112 for the atomic file limit scenario.\n// filler line 113 for the atomic file limit scenario.\n// filler line 114 for the atomic file limit scenario.\n// filler line 115 for the atomic file limit scenario.\n// filler line 116 for the atomic file limit scenario.\n// filler line 117 for the atomic file limit scenario.\n// filler line 118 for the atomic file limit scenario.\n// filler line 119 for the atomic file limit scenario.\n// filler line 120 for the atomic file limit scenario.\n// filler line 121 for the atomic file limit scenario.\n// filler line 122 for the atomic file limit scenario.\n// filler line 123 for the atomic file limit scenario.\n// filler line 124 for the atomic file limit scenario.\n// filler line 125 for the atomic file limit scenario.\n// filler line 126 for the atomic file limit scenario.\n// filler line 127 for the atomic file limit scenario.\n// filler line 128 for the atomic file limit scenario.\n// filler line 129 for the atomic file limit scenario.\n// filler line 130 for the atomic file limit scenario.\n// filler line 131 for the atomic file limit scenario.\n// filler line 132 for the atomic file limit scenario.\n// filler line 133 for the atomic file limit scenario.\n// filler line 134 for the atomic file limit scenario.\n// filler line 135 for the atomic file limit scenario.\n// filler line 136 for the atomic file limit scenario.\n// filler line 137 for the atomic file limit scenario.\n// filler line 138 for the atomic file limit scenario.\n// filler line 139 for the atomic file limit scenario.\n// filler line 140 for the atomic file limit scenario.\n// filler line 141 for the atomic file limit scenario.\n// filler line 142 for the atomic file limit scenario.\n// filler line 143 for the atomic file limit scenario.\n// filler line 144 for the atomic file limit scenario.\n// filler line 145 for the atomic file limit scenario.\n// filler line 146 for the atomic file limit scenario.\n// filler line 147 for the atomic file limit scenario.\n// filler line 148 for the atomic file limit scenario.\n// filler line 149 for the atomic file limit scenario.\n// filler line 150 for the atomic file limit scenario.\n// filler line 151 for the atomic file limit scenario.\n// filler line 152 for the atomic file limit scenario.\n// filler line 153 for the atomic file limit scenario.\n// filler line 154 for the atomic file limit scenario.\n// filler line 155 for the atomic file limit scenario.\n// filler line 156 for the atomic file limit scenario.\n// filler line 157 for the atomic file limit scenario.\n// filler line 158 for the atomic file limit scenario.\n// filler line 159 for the atomic file limit scenario.\n// filler line 160 for the atomic file limit scenario.\n// filler line 161 for the atomic file limit scenario.\n// filler line 162 for the atomic file limit scenario.\n// filler line 163 for the atomic file limit scenario.\n// filler line 164 for the atomic file limit scenario.\n// filler line 165 for the atomic file limit scenario.\n// filler line 166 for the atomic file limit scenario.\n// filler line 167 for the atomic file limit scenario.\n// filler line 168 for the atomic file limit scenario.\n// filler line 169 for the atomic file limit scenario.\n// filler line 170 for the atomic file limit scenario.\n// filler line 171 for the atomic file limit scenario.\n// filler line 172 for the atomic file limit scenario.\n// filler line 173 for the atomic file limit scenario.\n// filler line 174 for the atomic file limit scenario.\n// filler line 175 for the atomic file limit scenario.\n// filler line 176 for the atomic file limit scenario.\n// filler line 177 for the atomic file limit scenario.\n// filler line 178 for the atomic file limit scenario.\n// filler line 179 for the atomic file limit scenario.\n// filler line 180 for the atomic file limit scenario.\n// filler line 181 for the atomic file limit scenario.\n// filler line 182 for the atomic file limit scenario.\n// filler line 183 for the atomic file limit scenario.\n// filler line 184 for the atomic file limit scenario.\n// filler line 185 for the atomic file limit scenario.\n// filler line 186 for the atomic file limit scenario.\n// filler line 187 for the atomic file limit scenario.\n// filler line 188 for the atomic file limit scenario.\n// filler line 189 for the atomic file limit scenario.\n// filler line 190 for the atomic file limit scenario.\n// filler line 191 for the atomic file limit scenario.\n// filler line 192 for the atomic file limit scenario.\n// filler line 193 for the atomic file limit scenario.\n// filler line 194 for the atomic file limit scenario.\n// filler line 195 for the atomic file limit scenario.\n// filler line 196 for the atomic file limit scenario.\n// filler line 197 for the atomic file limit scenario.\n// filler line 198 for the atomic file limit scenario.\n// filler line 199 for the atomic file limit scenario.\n// filler line 200 for the atomic file limit scenario.\n// filler line 201 for the atomic file limit scenario.\n// filler line 202 for the atomic file limit scenario.\n// filler line 203 for the atomic file limit scenario.\n// filler line 204 for the atomic file limit scenario.\n// filler line 205 for the atomic file limit scenario.\n// filler line 206 for the atomic file limit scenario.\n// filler line 207 for the atomic file limit scenario.\n// filler line 208 for the atomic file limit scenario.\n// filler line 209 for the atomic file limit scenario.\n// filler line 210 for the atomic file limit scenario.\n// filler line 211 for the atomic file limit scenario.\n// filler line 212 for the atomic file limit scenario.\n// filler line 213 for the atomic file limit scenario.\n// filler line 214 for the atomic file limit scenario.\n// filler line 215 for the atomic file limit scenario.\n// filler line 216 for the atomic file limit scenario.\n// filler line 217 for the atomic file limit scenario.\n// filler line 218 for the atomic file limit scenario.\n// filler line 219 for the atomic file limit scenario.\n// filler line 220 for the atomic file limit scenario.\n// filler line 221 for the atomic file limit scenario.\n// filler line 222 for the atomic file limit scenario.\n// filler line 223 for the atomic file limit scenario.\n// filler line 224 for the atomic file limit scenario.\n// filler line 225 for the atomic file limit scenario.\n// filler line 226 for the atomic file limit scenario.\n// filler line 227 for the atomic file limit scenario.\n// filler line 228 for the atomic file limit scenario.\n// filler line 229 for the atomic file limit scenario.\n// filler line 230 for the atomic file limit scenario.\n// filler line 231 for the atomic file limit scenario.\n// filler line 232 for the atomic file limit scenario.\n// filler line 233 for the atomic file limit scenario.\n// filler line 234 for the atomic file limit scenario.\n// filler line 235 for the atomic file limit scenario.\n// filler line 236 for the atomic file limit scenario.\n// filler line 237 for the atomic file limit scenario.\n// filler line 238 for the atomic file limit scenario.\n// filler line 239 for the atomic file limit scenario.\n// filler line 240 for the atomic file limit scenario.\n// filler line 241 for the atomic file limit scenario.\n// filler line 242 for the atomic file limit scenario.\n// filler line 243 for the atomic file limit scenario.\n// filler line 244 for the atomic file limit scenario.\n// filler line 245 for the atomic file limit scenario.\n// filler line 246 for the atomic file limit scenario.\n// filler line 247 for the atomic file limit scenario.\n// filler line 248 for the atomic file limit scenario.\n// filler line 249 for the atomic file limit scenario.\n// filler line 250 for the atomic file limit scenario.\n// filler line 251 for the atomic file limit scenario.\n// filler line 252 for the atomic file limit scenario.\n// filler line 253 for the atomic file limit scenario.\n// filler line 254 for the atomic file limit scenario.\n// filler line 255 for the atomic file limit scenario.\n// filler line 256 for the atomic file limit scenario.\n// filler line 257 for the atomic file limit scenario.\n// filler line 258 for the atomic file limit scenario.\n// filler line 259 for the atomic file limit scenario.\n// filler line 260 for the atomic file limit scenario.\n// filler line 261 for the atomic file limit scenario.\n// filler line 262 for the atomic file limit scenario.\n// filler line 263 for the atomic file limit scenario.\n// filler line 264 for the atomic file limit scenario.\n// filler line 265 for the atomic file limit scenario.\n// filler line 266 for the atomic file limit scenario.\n// filler line 267 for the atomic file limit scenario.\n// filler line 268 for the atomic file limit scenario.\n// filler line 269 for the atomic file limit scenario.\n// filler line 270 for the atomic file limit scenario.\n// filler line 271 for the atomic file limit scenario.\n// filler line 272 for the atomic file limit scenario.\n// filler line 273 for the atomic file limit scenario.\n// filler line 274 for the atomic file limit scenario.\n// filler line 275 for the atomic file limit scenario.\n// filler line 276 for the atomic file limit scenario.\n// filler line 277 for the atomic file limit scenario.\n// filler line 278 for the atomic file limit scenario.\n// filler line 279 for the atomic file limit scenario.\n// filler line 280 for the atomic file limit scenario.\n// filler line 281 for the atomic file limit scenario.\n// filler line 282 for the atomic file limit scenario.\n// filler line 283 for the atomic file limit scenario.\n// filler line 284 for the atomic file limit scenario.\n// filler line 285 for the atomic file limit scenario.\n// filler line 286 for the atomic file limit scenario.\n// filler line 287 for the atomic file limit scenario.\n// filler line 288 for the atomic file limit scenario.\n// filler line 289 for the atomic file limit scenario.\n// filler line 290 for the atomic file limit scenario.\n// filler line 291 for the atomic file limit scenario.\n// filler line 292 for the atomic file limit scenario.\n// filler line 293 for the atomic file limit scenario.\n// filler line 294 for the atomic file limit scenario.\n// filler line 295 for the atomic file limit scenario.\n// filler line 296 for the atomic file limit scenario.\n// filler line 297 for the atomic file limit scenario.\n// filler line 298 for the atomic file limit scenario.\n// filler line 299 for the atomic file limit scenario.\n// filler line 300 for the atomic file limit scenario.\n// filler line 301 for the atomic file limit scenario.\n// filler line 302 for the atomic file limit scenario.\n// filler line 303 for the atomic file limit scenario.\n// filler line 304 for the atomic file limit scenario.\n// filler line 305 for the atomic file limit scenario.\n// filler line 306 for the atomic file limit scenario.\n// filler line 307 for the atomic file limit scenario.\n// filler line 308 for the atomic file limit scenario.\n// filler line 309 for the atomic file limit scenario.\n// filler line 310 for the atomic file limit scenario.\n// filler line 311 for the atomic file limit scenario.\n// filler line 312 for the atomic file limit scenario.\n// filler line 313 for the atomic file limit scenario.\n// filler line 314 for the atomic file limit scenario.\n// filler line 315 for the atomic file limit scenario.\n// filler line 316 for the atomic file limit scenario.\n// filler line 317 for the atomic file limit scenario.\n// filler line 318 for the atomic file limit scenario.\n// filler line 319 for the atomic file limit scenario.\n// filler line 320 for the atomic file limit scenario.\n// filler line 321 for the atomic file limit scenario.\n// filler line 322 for the atomic file limit scenario.\n// filler line 323 for the atomic file limit scenario.\n// filler line 324 for the atomic file limit scenario.\n// filler line 325 for the atomic file limit scenario.\n// filler line 326 for the atomic file limit scenario.\n// filler line 327 for the atomic file limit scenario.\n// filler line 328 for the atomic file limit scenario.\n// filler line 329 for the atomic file limit scenario.\n// filler line 330 for the atomic file limit scenario.\n// filler line 331 for the atomic file limit scenario.\n// filler line 332 for the atomic file limit scenario.\n// filler line 333 for the atomic file limit scenario.\n// filler line 334 for the atomic file limit scenario.\n// filler line 335 for the atomic file limit scenario.\n// filler line 336 for the atomic file limit scenario.\n// filler line 337 for the atomic file limit scenario.\n// filler line 338 for the atomic file limit scenario.\n// filler line 339 for the atomic file limit scenario.\n// filler line 340 for the atomic file limit scenario.\n// filler line 341 for the atomic file limit scenario.\n// filler line 342 for the atomic file limit scenario.\n// filler line 343 for the atomic file limit scenario.\n// filler line 344 for the atomic file limit scenario.\n// filler line 345 for the atomic file limit scenario.\n// filler line 346 for the atomic file limit scenario.\n// filler line 347 for the atomic file limit scenario.\n// filler line 348 for the atomic file limit scenario.\n// filler line 349 for the atomic file limit scenario.\n// filler line 350 for the atomic file limit scenario.\n// filler line 351 for the atomic file limit scenario.\n// filler line 352 for the atomic file limit scenario.\n// filler line 353 for the atomic file limit scenario.\n// filler line 354 for the atomic file limit scenario.\n// filler line 355 for the atomic file limit scenario.\n// filler line 356 for the atomic file limit scenario.\n// filler line 357 for the atomic file limit scenario.\n// filler line 358 for the atomic file limit scenario.\n// filler line 359 for the atomic file limit scenario.\n// filler line 360 for the atomic file limit scenario.\n// filler line 361 for the atomic file limit scenario.\n// filler line 362 for the atomic file limit scenario.\n// filler line 363 for the atomic file limit scenario.\n// filler line 364 for the atomic file limit scenario.\n// filler line 365 for the atomic file limit scenario.\n// filler line 366 for the atomic file limit scenario.\n// filler line 367 for the atomic file limit scenario.\n// filler line 368 for the atomic file limit scenario.\n// filler line 369 for the atomic file limit scenario.\n// filler line 370 for the atomic file limit scenario.\n// filler line 371 for the atomic file limit scenario.\n// filler line 372 for the atomic file limit scenario.\n// filler line 373 for the atomic file limit scenario.\n// filler line 374 for the atomic file limit scenario.\n// filler line 375 for the atomic file limit scenario.\n// filler line 376 for the atomic file limit scenario.\n// filler line 377 for the atomic file limit scenario.\n// filler line 378 for the atomic file limit scenario.\n// filler line 379 for the atomic file limit scenario.\n// filler line 380 for the atomic file limit scenario.\n// filler line 381 for the atomic file limit scenario.\n// filler line 382 for the atomic file limit scenario.\n// filler line 383 for the atomic file limit scenario.\n// filler line 384 for the atomic file limit scenario.\n// filler line 385 for the atomic file limit scenario.\n// filler line 386 for the atomic file limit scenario.\n// filler line 387 for the atomic file limit scenario.\n// filler line 388 for the atomic file limit scenario.\n// filler line 389 for the atomic file limit scenario.\n// filler line 390 for the atomic file limit scenario.\n// filler line 391 for the atomic file limit scenario.\n// filler line 392 for the atomic file limit scenario.\n// filler line 393 for the atomic file limit scenario.\n// filler line 394 for the atomic file limit scenario.\n// filler line 395 for the atomic file limit scenario.\n// filler line 396 for the atomic file limit scenario.\n// filler line 397 for the atomic file limit scenario.\n// filler line 398 for the atomic file limit scenario.\n// filler line 399 for the atomic file limit scenario.\n// filler line 400 for the atomic file limit scenario.\n// filler line 401 for the atomic file limit scenario.\n// filler line 402 for the atomic file limit scenario.\n// filler line 403 for the atomic file limit scenario.\n// filler line 404 for the atomic file limit scenario.\n// filler line 405 for the atomic file limit scenario.\n// filler line 406 for the atomic file limit scenario.\n// filler line 407 for the atomic file limit scenario.\n// filler line 408 for the atomic file limit scenario.\n// filler line 409 for the atomic file limit scenario.\n// filler line 410 for the atomic file limit scenario.\n// filler line 411 for the atomic file limit scenario.\n// filler line 412 for the atomic file limit scenario.\n// filler line 413 for the atomic file limit scenario.\n// filler line 414 for the atomic file limit scenario.\n// filler line 415 for the atomic file limit scenario.\n// filler line 416 for the atomic file limit scenario.\n// filler line 417 for the atomic file limit scenario.\n// filler line 418 for the atomic file limit scenario.\n// filler line 419 for the atomic file limit scenario.\n// filler line 420 for the atomic file limit scenario.\n// filler line 421 for the atomic file limit scenario.\n// filler line 422 for the atomic file limit scenario.\n// filler line 423 for the atomic file limit scenario.\n// filler line 424 for the atomic file limit scenario.\n// filler line 425 for the atomic file limit scenario.\n// filler line 426 for the atomic file limit scenario.\n// filler line 427 for the atomic file limit scenario.\n// filler line 428 for the atomic file limit scenario.\n// filler line 429 for the atomic file limit scenario.\n// filler line 430 for the atomic file limit scenario.\n// filler line 431 for the atomic file limit scenario.\n// filler line 432 for the atomic file limit scenario.\n// filler line 433 for the atomic file limit scenario.\n// filler line 434 for the atomic file limit scenario.\n// filler line 435 for the atomic file limit scenario.\n// filler line 436 for the atomic file limit scenario.\n// filler line 437 for the atomic file limit scenario.\n// filler line 438 for the atomic file limit scenario.\n// filler line 439 for the atomic file limit scenario.\n// filler line 440 for the atomic file limit scenario.\n// filler line 441 for the atomic file limit scenario.\n// filler line 442 for the atomic file limit scenario.\n// filler line 443 for the atomic file limit scenario.\n// filler line 444 for the atomic file limit scenario.\n// filler line 445 for the atomic file limit scenario.\n// filler line 446 for the atomic file limit scenario.\n// filler line 447 for the atomic file limit scenario.\n// filler line 448 for the atomic file limit scenario.\n// filler line 449 for the atomic file limit scenario.\n// filler line 450 for the atomic file limit scenario.\n// filler line 451 for the atomic file limit scenario.\n// filler line 452 for the atomic file limit scenario.\n// filler line 453 for the atomic file limit scenario.\n// filler line 454 for the atomic file limit scenario.\n// filler line 455 for the atomic file limit scenario.\n// filler line 456 for the atomic file limit scenario.\n// filler line 457 for the atomic file limit scenario.\n// filler line 458 for the atomic file limit scenario.\n// filler line 459 for the atomic file limit scenario.\n// filler line 460 for the atomic file limit scenario.\n// filler line 461 for the atomic file limit scenario.\n// filler line 462 for the atomic file limit scenario.\n// filler line 463 for the atomic file limit scenario.\n// filler line 464 for the atomic file limit scenario.\n// filler line 465 for the atomic file limit scenario.\n// filler line 466 for the atomic file limit scenario.\n// filler line 467 for the atomic file limit scenario.\n// filler line 468 for the atomic file limit scenario.\n// filler line 469 for the atomic file limit scenario.\n// filler line 470 for the atomic file limit scenario.\n// filler line 471 for the atomic file limit scenario.\n// filler line 472 for the atomic file limit scenario.\n// filler line 473 for the atomic file limit scenario.\n// filler line 474 for the atomic file limit scenario.\n// filler line 475 for the atomic file limit scenario.\n// filler line 476 for the atomic file limit scenario.\n// filler line 477 for the atomic file limit scenario.\n// filler line 478 for the atomic file limit scenario.\n// filler line 479 for the atomic file limit scenario.\n// filler line 480 for the atomic file limit scenario.\n// filler line 481 for the atomic file limit scenario.\n// filler line 482 for the atomic file limit scenario.\n// filler line 483 for the atomic file limit scenario.\n// filler line 484 for the atomic file limit scenario.\n// filler line 485 for the atomic file limit scenario.\n// filler line 486 for the atomic file limit scenario.\n// filler line 487 for the atomic file limit scenario.\n// filler line 488 for the atomic file limit scenario.\n// filler line 489 for the atomic file limit scenario.\n// filler line 490 for the atomic file limit scenario.\n// filler line 491 for the atomic file limit scenario.\n// filler line 492 for the atomic file limit scenario.\n// filler line 493 for the atomic file limit scenario.\n// filler line 494 for the atomic file limit scenario.\n// filler line 495 for the atomic file limit scenario.\n// filler line 496 for the atomic file limit scenario.\n// filler line 497 for the atomic file limit scenario.\n// filler line 498 for the atomic file limit scenario.\n// filler line 499 for the atomic file limit scenario.\n// filler line 500 for the atomic file limit scenario.\n// filler line 501 for the atomic file limit scenario.\n// filler line 502 for the atomic file limit scenario.\n// filler line 503 for the atomic file limit scenario.\n// filler line 504 for the atomic file limit scenario.\n// filler line 505 for the atomic file limit scenario.\n// filler line 506 for the atomic file limit scenario.\n// filler line 507 for the atomic file limit scenario.\n// filler line 508 for the atomic file limit scenario.\n// filler line 509 for the atomic file limit scenario.\n// filler line 510 for the atomic file limit scenario.\n// filler line 511 for the atomic file limit scenario.\n// filler line 512 for the atomic file limit scenario.\n// filler line 513 for the atomic file limit scenario.\n// filler line 514 for the atomic file limit scenario.\n// filler line 515 for the atomic file limit scenario.\n// filler line 516 for the atomic file limit scenario.\n// filler line 517 for the atomic file limit scenario.\n// filler line 518 for the atomic file limit scenario.\n// filler line 519 for the atomic file limit scenario.\n// filler line 520 for the atomic file limit scenario.\n// filler line 521 for the atomic file limit scenario.\n// filler line 522 for the atomic file limit scenario.\n// filler line 523 for the atomic file limit scenario.\n// filler line 524 for the atomic file limit scenario.\n// filler line 525 for the atomic file limit scenario.\n// filler line 526 for the atomic file limit scenario.\n// filler line 527 for the atomic file limit scenario.\n// filler line 528 for the atomic file limit scenario.\n// filler line 529 for the atomic file limit scenario.\n// filler line 530 for the atomic file limit scenario.\n// filler line 531 for the atomic file limit scenario.\n// filler line 532 for the atomic file limit scenario.\n// filler line 533 for the atomic file limit scenario.\n// filler line 534 for the atomic file limit scenario.\n// filler line 535 for the atomic file limit scenario.\n// filler line 536 for the atomic file limit scenario.\n// filler line 537 for the atomic file limit scenario.\n// filler line 538 for the atomic file limit scenario.\n// filler line 539 for the atomic file limit scenario.\n// filler line 540 for the atomic file limit scenario.\n// filler line 541 for the atomic file limit scenario.\n// filler line 542 for the atomic file limit scenario.\n// filler line 543 for the atomic file limit scenario.\n// filler line 544 for the atomic file limit scenario.\n// filler line 545 for the atomic file limit scenario.\n// filler line 546 for the atomic file limit scenario.\n// filler line 547 for the atomic file limit scenario.\n// filler line 548 for the atomic file limit scenario.\n// filler line 549 for the atomic file limit scenario.\n// filler line 550 for the atomic file limit scenario.\n// filler line 551 for the atomic file limit scenario.\n// filler line 552 for the atomic file limit scenario.\n// filler line 553 for the atomic file limit scenario.\n// filler line 554 for the atomic file limit scenario.\n// filler line 555 for the atomic file limit scenario.\n// filler line 556 for the atomic file limit scenario.\n// filler line 557 for the atomic file limit scenario.\n// filler line 558 for the atomic file limit scenario.\n// filler line 559 for the atomic file limit scenario.\n// filler line 560 for the atomic file limit scenario.\n// filler line 561 for the atomic file limit scenario.\n// filler line 562 for the atomic file limit scenario.\n// filler line 563 for the atomic file limit scenario.\n// filler line 564 for the atomic file limit scenario.\n// filler line 565 for the atomic file limit scenario.\n// filler line 566 for the atomic file limit scenario.\n// filler line 567 for the atomic file limit scenario.\n// filler line 568 for the atomic file limit scenario.\n// filler line 569 for the atomic file limit scenario.\n// filler line 570 for the atomic file limit scenario.\n// filler line 571 for the atomic file limit scenario.\n// filler line 572 for the atomic file limit scenario.\n// filler line 573 for the atomic file limit scenario.\n// filler line 574 for the atomic file limit scenario.\n// filler line 575 for the atomic file limit scenario.\n// filler line 576 for the atomic file limit scenario.\n// filler line 577 for the atomic file limit scenario.\n// filler line 578 for the atomic file limit scenario.\n// filler line 579 for the atomic file limit scenario.\n// filler line 580 for the atomic file limit scenario.\n// filler line 581 for the atomic file limit scenario.\n// filler line 582 for the atomic file limit scenario.\n// filler line 583 for the atomic file limit scenario.\n// filler line 584 for the atomic file limit scenario.\n// filler line 585 for the atomic file limit scenario.\n// filler line 586 for the atomic file limit scenario.\n// filler line 587 for the atomic file limit scenario.\n// filler line 588 for the atomic file limit scenario.\n// filler line 589 for the atomic file limit scenario.\n// filler line 590 for the atomic file limit scenario.\n// filler line 591 for the atomic file limit scenario.\n// filler line 592 for the atomic file limit scenario.\n// filler line 593 for the atomic file limit scenario.\n// filler line 594 for the atomic file limit scenario.\n// filler line 595 for the atomic file limit scenario.\n// filler line 596 for the atomic file limit scenario.\n// filler line 597 for the atomic file limit scenario.\n// filler line 598 for the atomic file limit scenario.\n// filler line 599 for the atomic file limit scenario.\n// filler line 600 for the atomic file limit scenario.\n// filler line 601 for the atomic file limit scenario.\n// filler line 602 for the atomic file limit scenario.\n// filler line 603 for the atomic file limit scenario.\n// filler line 604 for the atomic file limit scenario.\n// filler line 605 for the atomic file limit scenario.\n// filler line 606 for the atomic file limit scenario.\n// filler line 607 for the atomic file limit scenario.\n// filler line 608 for the atomic file limit scenario.\n// filler line 609 for the atomic file limit scenario.\n// filler line 610 for the atomic file limit scenario.\n// filler line 611 for the atomic file limit scenario.\n// filler line 612 for the atomic file limit scenario.\n// filler line 613 for the atomic file limit scenario.\n// filler line 614 for the atomic file limit scenario.\n// filler line 615 for the atomic file limit scenario.\n// filler line 616 for the atomic file limit scenario.\n// filler line 617 for the atomic file limit scenario.\n// filler line 618 for the atomic file limit scenario.\n// filler line 619 for the atomic file limit scenario.\n// filler line 620 for the atomic file limit scenario.\n// filler line 621 for the atomic file limit scenario.\n// filler line 622 for the atomic file limit scenario.\n// filler line 623 for the atomic file limit scenario.\n// filler line 624 for the atomic file limit scenario.\n// filler line 625 for the atomic file limit scenario.\n// filler line 626 for the atomic file limit scenario.\n// filler line 627 for the atomic file limit scenario.\n// filler line 628 for the atomic file limit scenario.\n// filler line 629 for the atomic file limit scenario.\n// filler line 630 for the atomic file limit scenario.\n// filler line 631 for the atomic file limit scenario.\n// filler line 632 for the atomic file limit scenario.\n// filler line 633 for the atomic file limit scenario.\n// filler line 634 for the atomic file limit scenario.\n// filler line 635 for the atomic file limit scenario.\n// filler line 636 for the atomic file limit scenario.\n// filler line 637 for the atomic file limit scenario.\n// filler line 638 for the atomic file limit scenario.\n// filler line 639 for the atomic file limit scenario.\n// filler line 640 for the atomic file limit scenario.\n// filler line 641 for the atomic file limit scenario.\n// filler line 642 for the atomic file limit scenario.\n// filler line 643 for the atomic file limit scenario.\n// filler line 644 for the atomic file limit scenario.\n// filler line 645 for the atomic file limit scenario.\n// filler line 646 for the atomic file limit scenario.\n// filler line 647 for the atomic file limit scenario.\n// filler line 648 for the atomic file limit scenario.\n// filler line 649 for the atomic file limit scenario.\n// filler line 650 for the atomic file limit scenario.\n// filler line 651 for the atomic file limit scenario.\n// filler line 652 for the atomic file limit scenario.\n// filler line 653 for the atomic file limit scenario.\n// filler line 654 for the atomic file limit scenario.\n// filler line 655 for the atomic file limit scenario.\n// filler line 656 for the atomic file limit scenario.\n// filler line 657 for the atomic file limit scenario.\n// filler line 658 for the atomic file limit scenario.\n// filler line 659 for the atomic file limit scenario.\n// filler line 660 for the atomic file limit scenario.\n// filler line 661 for the atomic file limit scenario.\n// filler line 662 for the atomic file limit scenario.\n// filler line 663 for the atomic file limit scenario.\n// filler line 664 for the atomic file limit scenario.\n// filler line 665 for the atomic file limit scenario.\n// filler line 666 for the atomic file limit scenario.\n// filler line 667 for the atomic file limit scenario.\n// filler line 668 for the atomic file limit scenario.\n// filler line 669 for the atomic file limit scenario.\n// filler line 670 for the atomic file limit scenario.\n// filler line 671 for the atomic file limit scenario.\n// filler line 672 for the atomic file limit scenario.\n// filler line 673 for the atomic file limit scenario.\n// filler line 674 for the atomic file limit scenario.\n// filler line 675 for the atomic file limit scenario.\n// filler line 676 for the atomic file limit scenario.\n// filler line 677 for the atomic file limit scenario.\n// filler line 678 for the atomic file limit scenario.\n// filler line 679 for the atomic file limit scenario.\n// filler line 680 for the atomic file limit scenario.\n// filler line 681 for the atomic file limit scenario.\n// filler line 682 for the atomic file limit scenario.\n// filler line 683 for the atomic file limit scenario.\n// filler line 684 for the atomic file limit scenario.\n// filler line 685 for the atomic file limit scenario.\n// filler line 686 for the atomic file limit scenario.\n// filler line 687 for the atomic file limit scenario.\n// filler line 688 for the atomic file limit scenario.\n// filler line 689 for the atomic file limit scenario.\n// filler line 690 for the atomic file limit scenario.\n// filler line 691 for the atomic file limit scenario.\n// filler line 692 for the atomic file limit scenario.\n// filler line 693 for the atomic file limit scenario.\n// filler line 694 for the atomic file limit scenario.\n// filler line 695 for the atomic file limit scenario.\n// filler line 696 for the atomic file limit scenario.\n// filler line 697 for the atomic file limit scenario.\n// filler line 698 for the atomic file limit scenario.\n// filler line 699 for the atomic file limit scenario.\n// filler line 700 for the atomic file limit scenario.\n// filler line 701 for the atomic file limit scenario.\n// filler line 702 for the atomic file limit scenario.\n// filler line 703 for the atomic file limit scenario.\n// filler line 704 for the atomic file limit scenario.\n// filler line 705 for the atomic file limit scenario.\n// filler line 706 for the atomic file limit scenario.\n// filler line 707 for the atomic file limit scenario.\n// filler line 708 for the atomic file limit scenario.\n// filler line 709 for the atomic file limit scenario.\n// filler line 710 for the atomic file limit scenario.\n// filler line 711 for the atomic file limit scenario.\n// filler line 712 for the atomic file limit scenario.\n// filler line 713 for the atomic file limit scenario.\n// filler line 714 for the atomic file limit scenario.\n// filler line 715 for the atomic file limit scenario.\n// filler line 716 for the atomic file limit scenario.\n// filler line 717 for the atomic file limit scenario.\n// filler line 718 for the atomic file limit scenario.\n// filler line 719 for the atomic file limit scenario.\n// filler line 720 for the atomic file limit scenario.\n// filler line 721 for the atomic file limit scenario.\n// filler line 722 for the atomic file limit scenario.\n// filler line 723 for the atomic file limit scenario.\n// filler line 724 for the atomic file limit scenario.\n// filler line 725 for the atomic file limit scenario.\n// filler line 726 for the atomic file limit scenario.\n// filler line 727 for the atomic file limit scenario.\n// filler line 728 for the atomic file limit scenario.\n// filler line 729 for the atomic file limit scenario.\n// filler line 730 for the atomic file limit scenario.\n// filler line 731 for the atomic file limit scenario.\n// filler line 732 for the atomic file limit scenario.\n// filler line 733 for the atomic file limit scenario.\n// filler line 734 for the atomic file limit scenario.\n// filler line 735 for the atomic file limit scenario.\n// filler line 736 for the atomic file limit scenario.\n// filler line 737 for the atomic file limit scenario.\n// filler line 738 for the atomic file limit scenario.\n// filler line 739 for the atomic file limit scenario.\n// filler line 740 for the atomic file limit scenario.\n// filler line 741 for the atomic file limit scenario.\n// filler line 742 for the atomic file limit scenario.\n// filler line 743 for the atomic file limit scenario.\n// filler line 744 for the atomic file limit scenario.\n// filler line 745 for the atomic file limit scenario.\n// filler line 746 for the atomic file limit scenario.\n// filler line 747 for the atomic file limit scenario.\n// filler line 748 for the atomic file limit scenario.\n// filler line 749 for the atomic file limit scenario.\n// filler line 750 for the atomic file limit scenario.\n// filler line 751 for the atomic file limit scenario.\n// filler line 752 for the atomic file limit scenario.\n// filler line 753 for the atomic file limit scenario.\n// filler line 754 for the atomic file limit scenario.\n// filler line 755 for the atomic file limit scenario.\n// filler line 756 for the atomic file limit scenario.\n// filler line 757 for the atomic file limit scenario.\n// filler line 758 for the atomic file limit scenario.\n// filler line 759 for the atomic file limit scenario.\n// filler line 760 for the atomic file limit scenario.\n// filler line 761 for the atomic file limit scenario.\n// filler line 762 for the atomic file limit scenario.\n// filler line 763 for the atomic file limit scenario.\n// filler line 764 for the atomic file limit scenario.\n// filler line 765 for the atomic file limit scenario.\n// filler line 766 for the atomic file limit scenario.\n// filler line 767 for the atomic file limit scenario.\n// filler line 768 for the atomic file limit scenario.\n// filler line 769 for the atomic file limit scenario.\n// filler line 770 for the atomic file limit scenario.\n// filler line 771 for the atomic file limit scenario.\n// filler line 772 for the atomic file limit scenario.\n// filler line 773 for the atomic file limit scenario.\n// filler line 774 for the atomic file limit scenario.\n// filler line 775 for the atomic file limit scenario.\n// filler line 776 for the atomic file limit scenario.\n// filler line 777 for the atomic file limit scenario.\n// filler line 778 for the atomic file limit scenario.\n// filler line 779 for the atomic file limit scenario.\n// filler line 780 for the atomic file limit scenario.\n// filler line 781 for the atomic file limit scenario.\n// filler line 782 for the atomic file limit scenario.\n// filler line 783 for the atomic file limit scenario.\n// filler line 784 for the atomic file limit scenario.\n// filler line 785 for the atomic file limit scenario.\n// filler line 786 for the atomic file limit scenario.\n// filler line 787 for the atomic file limit scenario.\n// filler line 788 for the atomic file limit scenario.\n// filler line 789 for the atomic file limit scenario.\n// filler line 790 for the atomic file limit scenario.\n// filler line 791 for the atomic file limit scenario.\n// filler line 792 for the atomic file limit scenario.\n// filler line 793 for the atomic file limit scenario.\n// filler line 794 for the atomic file limit scenario.\n// filler line 795 for the atomic file limit scenario.\n// filler line 796 for the atomic file limit scenario.\n// filler line 797 for the atomic file limit scenario.\n// filler line 798 for the atomic file limit scenario.\n// filler line 799 for the atomic file limit scenario.\n// filler line 800 for the atomic file limit scenario.\n// filler line 801 for the atomic file limit scenario.\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-ATOMIC-FILE",
+      "name": "right_sized_file",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// one short file.\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-ATOMIC-FILE",
+      "name": "junk_name",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "my_helpers.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// one short file.\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-ATOMIC-FILE",
+      "name": "clean_name",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// one short file.\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-DOC-ID",
+      "name": "long_function_without_id",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// CEP:WHAT: Runs the sample statements.\n// CEP:WHY: Demonstrates a complete function block.\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\nfn long_one() {\n    a1();\n    a2();\n    a3();\n    a4();\n    a5();\n    a6();\n    a7();\n    a8();\n    a9();\n    a10();\n    a11();\n}\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-DOC-ID",
+      "name": "long_function_with_id",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// CEP:ID: CS-a99\n// CEP:WHAT: Runs the sample statements.\n// CEP:WHY: Demonstrates a complete function block.\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\nfn long_one() {\n    a1();\n    a2();\n    a3();\n    a4();\n    a5();\n    a6();\n    a7();\n    a8();\n    a9();\n    a10();\n    a11();\n}\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-DOC-FILE",
+      "name": "registry_agrees",
+      "expected": 0,
+      "cross_file": true,
+      "files": [
+        {
+          "path": "docs/registry.json",
+          "content": "{\n  \"version\": 1,\n  \"functions\": [\n    \"CS-a01\"\n  ]\n}"
+        },
+        {
+          "path": "docs/functions/CS/CS-a01.md",
+          "content": "# CS-a01\ncontent.\n"
+        },
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// CEP:ID: CS-a01\n// CEP:WHAT: Runs the sample statements.\n// CEP:WHY: Demonstrates a complete function block.\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\nfn one() {\n    a();\n    b();\n}\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-DOC-FILE",
+      "name": "registry_drift",
+      "expected": 3,
+      "cross_file": true,
+      "files": [
+        {
+          "path": "docs/registry.json",
+          "content": "{\n  \"version\": 1,\n  \"functions\": [\n    \"CS-a02\"\n  ]\n}"
+        },
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// CEP:ID: CS-a01\n// CEP:WHAT: Runs the sample statements.\n// CEP:WHY: Demonstrates a complete function block.\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\nfn one() {\n    a();\n    b();\n}\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-DOC-TIERS",
+      "name": "missing_tiers",
+      "expected": 2,
+      "cross_file": true,
+      "files": [
+        {
+          "path": "docs/registry.json",
+          "content": "{\n  \"version\": 1,\n  \"functions\": [\n    \"CS-a01\"\n  ]\n}"
+        },
+        {
+          "path": "docs/functions/CS/CS-a01.md",
+          "content": "# CS-a01\ncontent.\n"
+        },
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-DOC-TIERS",
+      "name": "both_tiers_present",
+      "expected": 0,
+      "cross_file": true,
+      "files": [
+        {
+          "path": "docs/registry.json",
+          "content": "{\n  \"version\": 1,\n  \"functions\": [\n    \"CS-a01\"\n  ]\n}"
+        },
+        {
+          "path": "docs/functions/CS/CS-a01.md",
+          "content": "# CS-a01\n\n## Tier 1: Beginner\nSimple words.\n\n## Tier 2: Silicon Reality\nExact detail.\n"
+        },
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-DOC-INQUISITION",
+      "name": "missing_checklist",
+      "expected": 1,
+      "cross_file": true,
+      "files": [
+        {
+          "path": "docs/registry.json",
+          "content": "{\n  \"version\": 1,\n  \"functions\": [\n    \"CS-a01\"\n  ]\n}"
+        },
+        {
+          "path": "docs/functions/CS/CS-a01.md",
+          "content": "# CS-a01\n\n## Tier 1: Beginner\nSimple words.\n\n## Tier 2: Silicon Reality\nExact detail.\n"
+        },
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-DOC-INQUISITION",
+      "name": "checklist_present",
+      "expected": 0,
+      "cross_file": true,
+      "files": [
+        {
+          "path": "docs/registry.json",
+          "content": "{\n  \"version\": 1,\n  \"functions\": [\n    \"CS-a01\"\n  ]\n}"
+        },
+        {
+          "path": "docs/functions/CS/CS-a01.md",
+          "content": "# CS-a01\n\n## Tier 1: Beginner\nSimple words.\n\n## Tier 2: Silicon Reality\nExact detail.\n\n## Silent Failure Checklist\n1. Fallbacks: none.\n"
+        },
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-SECRET-SCAN",
+      "name": "assignment_style_secret",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn one() { let s = \"password: hunter2\"; }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-SECRET-SCAN",
+      "name": "prose_mention",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n// The credential policy document defines storage rules.\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-UNSAFE-DOC",
+      "name": "undocumented_unsafe",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn one() { unsafe { g(); } }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-UNSAFE-DOC",
+      "name": "documented_unsafe",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:UNSAFE: pointer arithmetic bounded by checked length.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n\nfn one() { unsafe { g(); } }\n"
+        }
+      ]
+    },
+    {
+      "rule": "CEP-LINT-HUNT-RECEIPT",
+      "name": "missing_receipt",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-0\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n\nfn one() { a(); }\n"
+        }
+      ],
+      "flags": {
+        "verify_hunt": true
+      }
+    },
+    {
+      "rule": "CEP-LINT-HUNT-RECEIPT",
+      "name": "class_not_covered",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn one() { a(); }\n"
+        }
+      ],
+      "flags": {
+        "verify_hunt": true
+      }
+    },
+    {
+      "rule": "CEP-LINT-HUNTER-RECEIPT",
+      "name": "missing_receipt",
+      "expected": 1,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-0\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\n\nfn one() { a(); }\n"
+        }
+      ],
+      "flags": {
+        "verify_hunter": true
+      }
+    },
+    {
+      "rule": "CEP-LINT-HUNTER-RECEIPT",
+      "name": "class_not_covered",
+      "expected": 0,
+      "cross_file": false,
+      "files": [
+        {
+          "path": "input.rs",
+          "content": "// CEP:FILE: input.rs\n// CEP:WHAT: Self-test scenario source file.\n// CEP:WHY: Provides deterministic lint input.\n// CEP:CLASS: CEP-1\n// CEP:STATUS: complete\n// CEP:FAILURE: none\n// CEP:ASSUMES: none\n// CEP:COST: cold; scenario only.\n// CEP:EVIDENCE: cep_lint --self-test.\n\nfn one() { a(); }\n"
+        }
+      ],
+      "flags": {
+        "verify_hunter": true
+      }
+    }
+  ]
+}

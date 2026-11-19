@@ -1,0 +1,435 @@
+{
+  "standard": {
+    "name": "CEP&CC",
+    "version": "0.4"
+  },
+  "file_globs": [
+    "\\.rs$"
+  ],
+  "exclude_paths": [
+    "(^|/)target/",
+    "(^|/)\\.git/",
+    "(^|/)quarantine/"
+  ],
+  "fail_on": [
+    0,
+    1
+  ],
+  "exit_codes": {
+    "clean": 0,
+    "findings": 1,
+    "bootstrap": 2,
+    "usage": 3
+  },
+  "rules": [
+    {
+      "id": "CEP-LINT-FILE-HEADER",
+      "check": "comment_block_schema",
+      "mode": "file_header",
+      "severity": 1,
+      "message": "file header: {detail}",
+      "params": {
+        "required_fields": [
+          "CEP:FILE",
+          "CEP:WHAT",
+          "CEP:WHY",
+          "CEP:CLASS",
+          "CEP:STATUS",
+          "CEP:FAILURE",
+          "CEP:ASSUMES",
+          "CEP:COST",
+          "CEP:EVIDENCE"
+        ],
+        "class_field": "CEP:CLASS",
+        "allowed_classes": [
+          "CEP-0",
+          "CEP-1",
+          "CEP-2",
+          "CC",
+          "FFI",
+          "HPC-0",
+          "HPC-1",
+          "HPC-2",
+          "RCS-0",
+          "RCS-1",
+          "RCS-2"
+        ],
+        "max_start_line": 3
+      }
+    },
+    {
+      "id": "CEP-LINT-FUNC-BLOCK",
+      "check": "function_policy",
+      "mode": "block",
+      "severity": 1,
+      "message": "function block: {detail}",
+      "params": {
+        "required_fields": [
+          "CEP:WHAT",
+          "CEP:WHY",
+          "CEP:STATUS",
+          "CEP:FAILURE",
+          "CEP:ASSUMES",
+          "CEP:COST",
+          "CEP:EVIDENCE"
+        ],
+        "min_body_statements": 2,
+        "gap_pattern": "^\\s*(#\\[[^\\]]*\\]|pub(\\([^)]*\\))?|unsafe|extern(\\s+\"[^\"]+\")?|async|const(\\s+[A-Za-z_][A-Za-z0-9_]*(:[^=]+)?=[^;]*;)?)\\s*$",
+        "require_block_for_lambdas": false
+      }
+    },
+    {
+      "id": "CEP-LINT-STATUS-VALUE",
+      "check": "comment_block_schema",
+      "mode": "status_value",
+      "severity": 2,
+      "message": "status value: {detail}",
+      "params": {
+        "status_field": "CEP:STATUS",
+        "allowed_values": [
+          "complete",
+          "partial",
+          "stub",
+          "placeholder"
+        ]
+      }
+    },
+    {
+      "id": "CEP-LINT-TODO-OWNER",
+      "check": "comment_regex",
+      "severity": 1,
+      "message": "todo owner: {detail}",
+      "params": {
+        "pattern": "\\b(TODO|FIXME|XXX|HACK)\\b",
+        "icase": true,
+        "suppression_pattern": "(CEP:TODO\\([^)]*\\):\\s*CEP-[A-Za-z0-9-]+\\s*:)|(\\bCEP-LINT-[A-Z0-9-]+\\b)"
+      }
+    },
+    {
+      "id": "CEP-LINT-STUB-DECL",
+      "check": "comment_block_schema",
+      "mode": "stub_requirements",
+      "severity": 1,
+      "message": "stub declaration: {detail}",
+      "params": {
+        "status_field": "CEP:STATUS",
+        "statuses": [
+          "stub",
+          "partial",
+          "placeholder"
+        ],
+        "required_fields": [
+          "CEP:OWNER",
+          "CEP:TICKET"
+        ]
+      }
+    },
+    {
+      "id": "CEP-LINT-PLACEHOLDER-COMMENT",
+      "check": "comment_regex",
+      "severity": 1,
+      "message": "placeholder comment: {detail}",
+      "params": {
+        "pattern": "\\b(not implemented|unimplemented|placeholder|fixme|tbd|wip)\\b",
+        "icase": true,
+        "suppression_pattern": "^[\\s/]*CEP:[A-Za-z-]+"
+      }
+    },
+    {
+      "id": "CEP-LINT-PLACEHOLDER-TEXT",
+      "check": "string_literal_regex",
+      "severity": 1,
+      "message": "placeholder text: {detail}",
+      "params": {
+        "pattern": "\\b(not implemented|unimplemented|placeholder|fixme|tbd|wip)\\b",
+        "icase": true
+      }
+    },
+    {
+      "id": "CEP-LINT-MAGIC-NUMBER",
+      "check": "numeric_literal_policy",
+      "severity": 2,
+      "message": "magic number: {detail}",
+      "params": {
+        "allowed_values": [
+          0,
+          1
+        ],
+        "exempt_contexts": [
+          "\\bconst\\b",
+          "\\bstatic\\b",
+          "\\benum\\b"
+        ]
+      }
+    },
+    {
+      "id": "CEP-LINT-MACRO-PREFIX",
+      "check": "macro_prefix_policy",
+      "severity": 2,
+      "message": "macro prefix: {detail}",
+      "params": {
+        "name_pattern": "^CEP_[A-Z0-9_]+$",
+        "guard_pattern": "^_?CEP_"
+      }
+    },
+    {
+      "id": "CEP-LINT-HOT-BANNED",
+      "check": "banned_token_policy",
+      "severity": 0,
+      "message": "hot banned: {detail}",
+      "params": {
+        "applies_to_classes": [
+          "CEP-0",
+          "HPC-0",
+          "RCS-0"
+        ],
+        "class_field": "CEP:CLASS",
+        "tokens": [
+          "new",
+          "delete",
+          "throw",
+          "try",
+          "catch",
+          "dynamic_cast",
+          "typeid",
+          "virtual",
+          "std::function",
+          "std::any",
+          "std::shared_ptr",
+          "std::weak_ptr",
+          "std::bind",
+          "std::regex",
+          "std::format",
+          "std::print",
+          "std::println",
+          "std::filesystem",
+          "std::thread",
+          "std::async",
+          "std::sort",
+          "std::stable_sort",
+          "Box",
+          "Vec",
+          "String",
+          "format!",
+          "println!",
+          "eprintln!",
+          "panic!",
+          "unwrap",
+          "expect",
+          "todo!",
+          "unimplemented!",
+          "Rc",
+          "Arc",
+          "Mutex",
+          "RwLock"
+        ]
+      }
+    },
+    {
+      "id": "CEP-LINT-STUB-BODY",
+      "check": "function_policy",
+      "mode": "stub_body",
+      "severity": 1,
+      "message": "stub body: {detail}",
+      "params": {
+        "suppress_status_field": "CEP:STATUS",
+        "suppress_statuses": [
+          "stub",
+          "partial",
+          "placeholder"
+        ]
+      }
+    },
+    {
+      "id": "CEP-LINT-EMPTY-CATCH",
+      "check": "flat_code_regex",
+      "severity": 1,
+      "message": "empty catch: {detail}",
+      "params": {
+        "pattern": "catch\\s*\\([^)]*\\)\\s*\\{\\s*\\}"
+      }
+    },
+    {
+      "id": "CEP-LINT-EMPTY-BRANCH",
+      "check": "flat_code_regex",
+      "severity": 2,
+      "message": "empty branch: {detail}",
+      "params": {
+        "pattern": "\\b(if|while|for)\\b[^;{}]*\\{\\s*\\}",
+        "reject_pattern": "=>"
+      }
+    },
+    {
+      "id": "CEP-LINT-CONSTANT-RETURN",
+      "check": "function_policy",
+      "mode": "constant_return",
+      "severity": 2,
+      "message": "constant return: {detail}",
+      "params": {
+        "pattern": "^\\s*(return\\s+)?(true|false)\\s*;?\\s*$"
+      }
+    },
+    {
+      "id": "CEP-LINT-NAMING-TYPE",
+      "check": "flat_code_regex",
+      "severity": 2,
+      "message": "naming type: {detail}",
+      "params": {
+        "pattern": "\\b(struct|enum|trait|type)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+        "name_group": 2,
+        "name_pattern": "^[A-Z][A-Za-z0-9]*$"
+      }
+    },
+    {
+      "id": "CEP-LINT-NAMING-FUNC",
+      "check": "function_policy",
+      "mode": "naming",
+      "severity": 2,
+      "message": "naming func: {detail}",
+      "params": {
+        "name_pattern": "^[a-z_][a-z0-9_]*$"
+      }
+    },
+    {
+      "id": "CEP-LINT-COMMENTED-CODE",
+      "check": "comment_regex",
+      "severity": 2,
+      "message": "commented code: {detail}",
+      "params": {
+        "pattern": "^\\s*(let\\s|fn\\s|return\\s|if\\s|for\\s|while\\s|match\\s|[A-Za-z_][A-Za-z0-9_]*\\s*=[^=].*[;,}]|[A-Za-z_][A-Za-z0-9_.:]*\\([^;{)]*\\)\\s*;?)$",
+        "suppression_pattern": "^[\\s/]*CEP:[A-Za-z-]+"
+      }
+    },
+    {
+      "id": "CEP-LINT-DOC-SYNC",
+      "check": "doc_rule_coverage",
+      "severity": 1,
+      "message": "doc sync: {detail}",
+      "params": {
+        "doc_path": "standards.md",
+        "heading_pattern": "^### Rule (CEP-LINT-[A-Z0-9-]+)$",
+        "version_pattern": "^Version: \\*\\*([0-9]+\\.[0-9]+)\\*\\*\\s*$"
+      }
+    },
+    {
+      "id": "CEP-LINT-ATOMIC-FILE",
+      "check": "file_topology_policy",
+      "severity": 1,
+      "message": "atomic file: {detail}",
+      "params": {
+        "line_limits": {
+          "CEP-0": 400,
+          "HPC-0": 400,
+          "RCS-0": 400,
+          "CEP-1": 800,
+          "HPC-1": 800,
+          "RCS-1": 800,
+          "CC": 800,
+          "FFI": 800,
+          "CEP-2": 1200,
+          "HPC-2": 1200,
+          "RCS-2": 1200
+        },
+        "default_limit": 800,
+        "junk_names": [
+          "util",
+          "helper",
+          "misc",
+          "common"
+        ]
+      }
+    },
+    {
+      "id": "CEP-LINT-DOC-ID",
+      "check": "function_policy",
+      "mode": "id",
+      "severity": 1,
+      "message": "doc id: {detail}",
+      "params": {
+        "max_id_statements": 10,
+        "id_pattern": "^[A-Z]+-[a-z0-9]+$"
+      }
+    },
+    {
+      "id": "CEP-LINT-DOC-FILE",
+      "check": "rosetta_policy",
+      "mode": "doc_file",
+      "severity": 1,
+      "message": "doc file: {detail}",
+      "params": {
+        "registry_path": "docs/registry.json",
+        "docs_prefix": "docs/functions"
+      }
+    },
+    {
+      "id": "CEP-LINT-DOC-TIERS",
+      "check": "rosetta_policy",
+      "mode": "doc_tiers",
+      "severity": 1,
+      "message": "doc tiers: {detail}",
+      "params": {}
+    },
+    {
+      "id": "CEP-LINT-DOC-INQUISITION",
+      "check": "rosetta_policy",
+      "mode": "doc_inquisition",
+      "severity": 1,
+      "message": "doc inquisition: {detail}",
+      "params": {}
+    },
+    {
+      "id": "CEP-LINT-SECRET-SCAN",
+      "check": "secret_probe_policy",
+      "severity": 0,
+      "message": "secret scan: {detail}",
+      "params": {
+        "patterns": [
+          "\\b(password|passwd|secret_key|api_key|apikey|aws_secret_access_key)\\s*[=:]\\s*\\S+",
+          "-----BEGIN [A-Z ]*PRIVATE KEY-----",
+          "\\bAKIA[0-9A-Z]{16}\\b"
+        ],
+        "exempt_paths": [],
+        "suppression_pattern": ""
+      }
+    },
+    {
+      "id": "CEP-LINT-UNSAFE-DOC",
+      "check": "unsafe_doc_policy",
+      "severity": 1,
+      "message": "unsafe doc: {detail}",
+      "params": {
+        "exempt_paths": []
+      }
+    },
+    {
+      "id": "CEP-LINT-HUNT-RECEIPT",
+      "check": "commit_hunt_manifest",
+      "severity": 0,
+      "message": "hunt receipt: {detail}",
+      "params": {
+        "receipt_path": ".cep/hunt_receipt.json",
+        "min_fuzz_executions": 100000,
+        "min_diff_inputs": 10000,
+        "applies_to_classes": [
+          "CEP-0",
+          "HPC-0",
+          "RCS-0"
+        ]
+      }
+    },
+    {
+      "id": "CEP-LINT-HUNTER-RECEIPT",
+      "check": "hunter_manifest",
+      "severity": 0,
+      "message": "hunter receipt: {detail}",
+      "params": {
+        "receipt_path": ".cep/hunter_receipt.json",
+        "applies_to_classes": [
+          "CEP-0",
+          "HPC-0",
+          "RCS-0"
+        ]
+      }
+    }
+  ]
+}
