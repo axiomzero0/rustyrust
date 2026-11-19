@@ -41,8 +41,8 @@ const MAX_DEPTH: usize = 128;
 /// CEP:ASSUMES: The stream ends with Eof.
 /// CEP:COST: cold; linear in token count.
 /// CEP:EVIDENCE: doc file docs/functions/FE/FE-a01.md; unit test parses_program.
-pub fn parse_program(text: &str, tokens: &[Token]) -> Result<Program, Vec<Diagnostic>> {
-    let mut p = Parser { text, tokens, pos: 0, errs: Vec::new(), depth: 0 };
+pub fn parse_program(_text: &str, tokens: &[Token]) -> Result<Program, Vec<Diagnostic>> {
+    let mut p = Parser { tokens, pos: 0, errs: Vec::new(), depth: 0 };
     let mut fns = Vec::new();
     while !p.at_kw("fn") && !p.at_eof() {
         p.err("expected function definition");
@@ -61,7 +61,6 @@ pub fn parse_program(text: &str, tokens: &[Token]) -> Result<Program, Vec<Diagno
 }
 
 struct Parser<'a> {
-    text: &'a str,
     tokens: &'a [Token],
     pos: usize,
     errs: Vec<Diagnostic>,
@@ -156,6 +155,22 @@ impl<'a> Parser<'a> {
         }
     }
 
+    // CEP:WHAT: Consumes one keyword when present.
+    // CEP:WHY: Optional keywords such as else use conditional consumption.
+    // CEP:STATUS: complete
+    // CEP:FAILURE: none
+    // CEP:ASSUMES: none
+    // CEP:COST: cold; constant time.
+    // CEP:EVIDENCE: unit test rr_frontend::parser::tests::parses_program.
+    fn eat_kw(&mut self, k: &str) -> bool {
+        if self.at_kw(k) {
+            self.bump();
+            true
+        } else {
+            false
+        }
+    }
+
     /// CEP:WHAT: Consumes one punctuation symbol or records an error.
     /// CEP:WHY: Required separators must fail loudly with a span.
     /// CEP:STATUS: complete
@@ -169,16 +184,6 @@ impl<'a> Parser<'a> {
         }
     }
 
-    /// CEP:WHAT: Extracts the text of one span.
-    /// CEP:WHY: Identifier and literal payloads come from source text.
-    /// CEP:STATUS: complete
-    /// CEP:FAILURE: none
-    /// CEP:ASSUMES: Spans are within the file bounds.
-    /// CEP:COST: cold; one substring.
-    /// CEP:EVIDENCE: unit test rr_frontend::parser::tests::parses_program.
-    fn text_at(&self, s: Span) -> &'a str {
-        &self.text[s.lo as usize..s.hi as usize]
-    }
 
     /// CEP:WHAT: Parses one function definition.
     /// CEP:WHY: Functions are the only top-level items of V0.
@@ -191,6 +196,24 @@ impl<'a> Parser<'a> {
         self.depth_guard();
         self.bump();
         let name = self.parse_ident();
+        let params = self.parse_params();
+        let mut ret = Ty::Unit;
+        if self.eat_punct("->") {
+            ret = self.parse_ty();
+        }
+        let body = self.parse_block();
+        self.depth -= 1;
+        Some(FnDef { name, params, ret, body })
+    }
+
+    // CEP:WHAT: Parses one parameter list with type annotations.
+    // CEP:WHY: Signatures are the type-checker's interface input.
+    // CEP:STATUS: complete
+    // CEP:FAILURE: Records diagnostics for malformed parameter lists.
+    // CEP:ASSUMES: The cursor sits at the open parenthesis.
+    // CEP:COST: cold; linear in parameter count.
+    // CEP:EVIDENCE: unit test rr_frontend::parser::tests::parses_program.
+    fn parse_params(&mut self) -> Vec<Param> {
         let mut params = Vec::new();
         self.expect_punct("(");
         if !self.at_punct(")") {
@@ -205,13 +228,7 @@ impl<'a> Parser<'a> {
             }
         }
         self.expect_punct(")");
-        let mut ret = Ty::Unit;
-        if self.eat_punct("->") {
-            ret = self.parse_ty();
-        }
-        let body = self.parse_block();
-        self.depth -= 1;
-        Some(FnDef { name, params, ret, body })
+        params
     }
 
     /// CEP:WHAT: Guards parser recursion with the depth bound.
@@ -538,7 +555,7 @@ impl<'a> Parser<'a> {
         let cond = Box::new(self.parse_expr());
         let then = self.parse_block();
         let mut els = None;
-        if self.eat_punct("else") {
+        if self.eat_kw("else") {
             if self.at_kw("if") {
                 els = Some(Box::new(self.parse_if()));
             } else {
@@ -571,9 +588,6 @@ mod tests {
     use super::*;
     use crate::lexer;
 
-    /// Sample constant used by parser tests.
-    const SAMPLE_LITERAL: i64 = 42;
-
     /// CEP:WHAT: Verifies parsing of a full program with a call and a loop.
     /// CEP:WHY: The pipeline entry must accept representative V0 programs.
     /// CEP:STATUS: complete
@@ -590,7 +604,6 @@ mod tests {
         let src2 = "fn add(a: i64, b: i64) -> i64 { a + b } fn main() -> i64 { add(1, 2) }";
         let p2 = parse_program(src2, &lexer::lex(src2).unwrap()).unwrap();
         assert_eq!(p2.fns[1].params.len(), 0);
-        assert_eq!(SAMPLE_LITERAL, 42);
     }
 
     /// CEP:WHAT: Verifies operator precedence shapes.

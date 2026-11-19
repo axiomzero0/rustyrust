@@ -34,14 +34,14 @@ pub enum Tok {
     Eof,
 }
 
+/// Advance applied after scanning a two-character sequence.
+const SEQ_ADVANCE: usize = 2;
+
 /// Punctuation strings, longest first for greedy matching.
-const PUNCTS: [&str; 21] = ["&&", "||", "==", "!=", "<=", ">=", "->", "+", "-", "*", "/", "%", "(", ")", "{", "}", ",", ";", "=", "<", ">"];
+const PUNCTS: [&str; 22] = ["&&", "||", "==", "!=", "<=", ">=", "->", "+", "-", "*", "/", "%", "(", ")", "{", "}", ",", ";", "=", "<", ">", ":"];
 
 /// Keywords recognized by the scanner.
 const KEYWORDS: [&str; 10] = ["fn", "let", "mut", "return", "if", "else", "while", "true", "false", "i64"];
-
-/// Maximum i64 value used for literal bound checking.
-const I64_MAX_TEXT: u128 = 9223372036854775807;
 
 /// CEP:WHAT: Scans source text into tokens or diagnostics.
 /// CEP:WHY: The parser needs a flat token stream with spans.
@@ -82,6 +82,7 @@ pub fn lex(text: &str) -> Result<Vec<Token>, Vec<crate::Diagnostic>> {
 
 /// CEP:WHAT: Skips whitespace and nested comments from one offset.
 /// CEP:WHY: Comment handling must match Rust nesting semantics.
+/// CEP:ID: LEX-a02
 /// CEP:STATUS: complete
 /// CEP:FAILURE: none
 /// CEP:ASSUMES: Block comments nest; line comments end at newline.
@@ -99,20 +100,20 @@ fn skip_ws_comments(text: &str, mut i: usize) -> usize {
         }
         if b[i] == b'/' && i + 1 < b.len() && b[i + 1] == b'/' {
             while i < b.len() && b[i] != b'\n' {
-                i += 1;
+                i += SEQ_ADVANCE;
             }
             continue;
         }
         if b[i] == b'/' && i + 1 < b.len() && b[i + 1] == b'*' {
-            i += 2;
+            i += SEQ_ADVANCE;
             let mut depth: usize = 1;
             while i < b.len() && depth > 0 {
                 if b[i] == b'/' && i + 1 < b.len() && b[i + 1] == b'*' {
                     depth += 1;
-                    i += 2;
+                    i += SEQ_ADVANCE;
                 } else if b[i] == b'*' && i + 1 < b.len() && b[i + 1] == b'/' {
                     depth -= 1;
-                    i += 2;
+                    i += SEQ_ADVANCE;
                 } else {
                     i += 1;
                 }
