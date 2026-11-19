@@ -194,7 +194,18 @@ fn term_uses(t: &Terminator, local: usize) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rr_hir::hir::Ty;
 
+    /// Folded sample value used by the verifier test.
+    const SAMPLE_FOLD: i64 = 9;
+
+    // CEP:WHAT: Verifies acceptance of honest certificates and rejection of tampered ones.
+    // CEP:WHY: The checker is the trust boundary for optimized IR.
+    // CEP:STATUS: complete
+    // CEP:FAILURE: Fails the test binary on regression.
+    // CEP:ASSUMES: none
+    // CEP:COST: cold; unit test only.
+    // CEP:EVIDENCE: cargo test -p rr-verifier.
     /// CEP:WHAT: Verifies acceptance of honest certificates and rejection of tampered ones.
     /// CEP:WHY: The checker is the trust boundary for optimized IR.
     /// CEP:STATUS: complete
