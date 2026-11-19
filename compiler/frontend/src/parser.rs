@@ -397,11 +397,7 @@ impl<'a> Parser<'a> {
     fn parse_binary(&mut self, min_prec: u8) -> Expr {
         self.depth_guard();
         let mut l = self.parse_unary();
-        loop {
-            let (op, prec) = match self.cur_binop() {
-                Some(x) => x,
-                None => break,
-            };
+        while let Some((op, prec)) = self.cur_binop() {
             if prec < min_prec {
                 break;
             }
