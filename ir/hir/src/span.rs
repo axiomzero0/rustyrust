@@ -49,6 +49,9 @@ mod tests {
     /// Sample bound used by the span test.
     const MID: u32 = 5;
 
+    /// Sample end bound used by the span test.
+    const END: u32 = 9;
+
     /// CEP:WHAT: Verifies span construction and merging.
     /// CEP:WHY: Diagnostics depend on exact spans.
     /// CEP:STATUS: complete
@@ -59,7 +62,7 @@ mod tests {
     #[test]
     fn span_operations() {
         let a = Span::new(0, MID);
-        let b = Span::new(MID, 9);
-        assert_eq!(a.to(b), Span::new(0, 9));
+        let b = Span::new(MID, END);
+        assert_eq!(a.to(b), Span::new(0, END));
     }
 }
