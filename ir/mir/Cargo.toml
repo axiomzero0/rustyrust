@@ -1,0 +1,9 @@
+[package]
+name = "rr-mir"
+version = "0.1.0"
+edition = "2021"
+description = "Mid-level IR: basic blocks with explicit locals, printer, hash, and verifier."
+license = "Apache-2.0"
+
+[dependencies]
+rr-hir = { path = "../../ir/hir" }

@@ -52,3 +52,32 @@ name = "regex-syntax"
 version = "0.8.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d902046e6a28a1e4c3cab97258a0ce11e994903f01c2d97a9447a0b3df85f4f6"
+
+[[package]]
+name = "rr-hir"
+version = "0.1.0"
+
+[[package]]
+name = "rr-lir"
+version = "0.1.0"
+
+[[package]]
+name = "rr-machine"
+version = "0.1.0"
+dependencies = [
+ "rr-lir",
+]
+
+[[package]]
+name = "rr-mir"
+version = "0.1.0"
+dependencies = [
+ "rr-hir",
+]
+
+[[package]]
+name = "rr-thir"
+version = "0.1.0"
+dependencies = [
+ "rr-hir",
+]

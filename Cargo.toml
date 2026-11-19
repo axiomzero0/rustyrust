@@ -2,4 +2,9 @@
 resolver = "2"
 members = [
     "tools/cep_lint",
+    "ir/hir",
+    "ir/thir",
+    "ir/mir",
+    "ir/lir",
+    "ir/machine",
 ]

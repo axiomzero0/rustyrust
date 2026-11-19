@@ -1,0 +1,6 @@
+[package]
+name = "rr-lir"
+version = "0.1.0"
+edition = "2021"
+description = "Low-level IR with virtual registers, physical registers, and stack slots."
+license = "Apache-2.0"

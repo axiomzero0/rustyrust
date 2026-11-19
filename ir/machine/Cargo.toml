@@ -1,0 +1,9 @@
+[package]
+name = "rr-machine"
+version = "0.1.0"
+edition = "2021"
+description = "Machine IR after register assignment: frame layout and function images."
+license = "Apache-2.0"
+
+[dependencies]
+rr-lir = { path = "../../ir/lir" }

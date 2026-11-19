@@ -1,0 +1,6 @@
+[package]
+name = "rr-hir"
+version = "0.1.0"
+edition = "2021"
+description = "High-level IR: spans, types, and source syntax for the V0 dialect."
+license = "Apache-2.0"
