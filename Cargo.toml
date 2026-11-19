@@ -7,4 +7,5 @@ members = [
     "ir/mir",
     "ir/lir",
     "ir/machine",
+    "compiler/frontend",
 ]

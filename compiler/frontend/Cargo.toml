@@ -1,0 +1,9 @@
+[package]
+name = "rr-frontend"
+version = "0.1.0"
+edition = "2021"
+description = "Lexer and recursive-descent parser for the V0 dialect."
+license = "Apache-2.0"
+
+[dependencies]
+rr-hir = { path = "../../ir/hir" }
