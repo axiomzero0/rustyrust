@@ -110,7 +110,7 @@ fn check_main(p: &Program, errs: &mut Vec<TypeError>) {
 /// CEP:ASSUMES: none
 /// CEP:COST: cold; linear in body size.
 /// CEP:EVIDENCE: unit test rr_typeck::tests::checks_types.
-fn check_fn(f: &FnDef, sigs: &[FnSig], solver: &mut Solver, errs: &mut Vec<TypeError>) -> TypedFn {
+fn check_fn(f: &FnDef, sigs: &[FnSig], _solver: &mut Solver, errs: &mut Vec<TypeError>) -> TypedFn {
     let mut vars: Vec<(String, Ty)> = f.params.iter().map(|x| (x.name.name.clone(), x.ty)).collect();
     let mut cx = Ctx { sigs, errs };
     let stmts = check_block(&f.body, &mut vars, &mut cx);
