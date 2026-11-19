@@ -291,6 +291,7 @@ fn check_call(callee: &Ident, args: &[Expr], sigs: &[FnSig], vars: &[(String, Ty
 
 /// CEP:WHAT: Checks one conditional with branch type unification.
 /// CEP:WHY: If expressions unify branch types and produce one value type.
+/// CEP:ID: FE-a12
 /// CEP:WHY: Both branches must agree when a value is used.
 /// CEP:STATUS: complete
 /// CEP:FAILURE: Records diagnostics for non-bool conditions and branch mismatches.

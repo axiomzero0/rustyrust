@@ -225,6 +225,7 @@ impl FnBuilder {
     }
 
     /// CEP:WHAT: Lowers one expression to the local holding its value.
+    /// CEP:WHY: Every value needs one home before operators apply.
     /// CEP:ID: FE-a10
     /// CEP:STATUS: complete
     /// CEP:FAILURE: none
@@ -281,6 +282,7 @@ impl FnBuilder {
 
     /// CEP:WHAT: Lowers one short-circuit operator into guarded blocks.
     /// CEP:WHY: And and or must not evaluate the right operand unconditionally.
+    /// CEP:ID: IR-a05
     /// CEP:STATUS: complete
     /// CEP:FAILURE: none
     /// CEP:ASSUMES: The result local is bool-typed.
@@ -350,6 +352,7 @@ impl FnBuilder {
 
     /// CEP:WHAT: Lowers one conditional into branch blocks and a join block.
     /// CEP:WHY: If expressions store their value into one result local.
+    /// CEP:ID: IR-a06
     /// CEP:STATUS: complete
     /// CEP:FAILURE: none
     /// CEP:ASSUMES: Branches unify on the result type per the type checker.
