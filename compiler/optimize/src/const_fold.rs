@@ -40,10 +40,9 @@ pub fn run(f: &mut Function, obligations: &mut Vec<Json>) {
 fn fold_assign(name: &str, bi: usize, si: usize, place: LocalId, rv: &mut Rvalue, obligations: &mut Vec<Json>) {
     let candidate = match rv {
         Rvalue::BinaryOp { op, l: Operand::Const(a), r: Operand::Const(b) } => Some((*op, *a, *b)),
-        Rvalue::UnaryOp { op: UnOp::Neg, e: Operand::Const(a) } => match a {
-            Constant::I64(v) => Some((BinOp::Sub, Constant::I64(0), Constant::I64(*v))),
-            _ => None,
-        },
+        Rvalue::UnaryOp { op: UnOp::Neg, e: Operand::Const(Constant::I64(v)) } => {
+            Some((BinOp::Sub, Constant::I64(0), Constant::I64(*v)))
+        }
         _ => None,
     };
     if let Some((op, l, r)) = candidate {

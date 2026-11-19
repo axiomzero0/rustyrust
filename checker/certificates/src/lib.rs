@@ -414,7 +414,7 @@ mod tests {
         let ob = fold_obligation("main", 0, 1, "add", 2, SAMPLE_NUM, SAMPLE_SUM);
         let text = serialize(&ob);
         let back = parse(&text).unwrap();
-        assert_eq!(back.get("result").unwrap().as_i64(), Some(9));
+        assert_eq!(back.get("result").unwrap().as_i64(), Some(SAMPLE_SUM));
         assert_eq!(back.get("op").unwrap().as_str(), Some("add"));
     }
 }

@@ -24,7 +24,7 @@ use rr_mir::printer::program_hash;
 pub fn verify(p: &Program, cert: &Json) -> Vec<String> {
     let mut out = Vec::new();
     check_hashes(p, cert, &mut out);
-    if let Some(Json::Arr(obs)) = cert.get("obligations").map(|x| x.clone()).as_ref().map(|x| x.clone()) {
+    if let Some(Json::Arr(obs)) = cert.get("obligations") {
         for o in obs.iter() {
             check_obligation(p, o, &mut out);
         }

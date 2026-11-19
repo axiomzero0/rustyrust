@@ -9,7 +9,7 @@
 // CEP:EVIDENCE: unit test rr_optimize::dce::tests::removes_dead_stores.
 #![deny(missing_docs)]
 use rr_certificates::{dead_obligation, Json};
-use rr_hir::hir::{BinOp, Ty};
+use rr_hir::hir::BinOp;
 use rr_mir::model::*;
 
 /// CEP:WHAT: Removes dead stores in one function and emits obligations.
@@ -174,9 +174,9 @@ mod tests {
     fn removes_dead_stores() {
         let mut f = Function {
             name: "main".into(),
-            locals: vec![Local { ty: Ty::I64, is_immutable: true }, Local { ty: Ty::I64, is_immutable: false }],
+            locals: vec![Local { ty: rr_hir::hir::Ty::I64, is_immutable: true }, Local { ty: rr_hir::hir::Ty::I64, is_immutable: false }],
             params: Vec::new(),
-            ret: Ty::I64,
+            ret: rr_hir::hir::Ty::I64,
             blocks: vec![BasicBlock {
                 stmts: vec![
                     Statement::Assign { place: 1, rvalue: Rvalue::Use(Operand::Const(Constant::I64(SAMPLE_DEAD))) },

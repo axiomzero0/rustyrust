@@ -9,7 +9,7 @@
 // CEP:EVIDENCE: cargo test -p rr-lowering.
 //! THIR to MIR lowering.
 #![deny(missing_docs)]
-use rr_hir::hir::{BinOp, Ty, UnOp};
+use rr_hir::hir::{BinOp, Ty};
 use rr_mir::model::*;
 use rr_thir::{TExpr, TStmt, TypedFn, TypedProgram};
 

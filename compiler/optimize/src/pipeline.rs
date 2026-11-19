@@ -64,30 +64,6 @@ fn assemble(input_hash: u64, mid_hash: u64, output_hash: u64, obligations: Vec<J
     ])
 }
 
-/// Mutable function list helper trait local to the pipeline.
-trait FnsMut {
-    /// CEP:WHAT: Provides mutable access to all functions.
-    /// CEP:WHY: Passes iterate functions in order.
-    /// CEP:STATUS: complete
-    /// CEP:FAILURE: none
-    /// CEP:ASSUMES: none
-    /// CEP:COST: cold; constant time.
-    /// CEP:EVIDENCE: unit test rr_optimize::pipeline::tests::pipeline_verifies.
-    fn fns_mut(&mut self) -> &mut Vec<Function>;
-}
-
-impl FnsMut for Program {
-    /// CEP:WHAT: Provides mutable access to all functions.
-    /// CEP:WHY: Passes iterate functions in order.
-    /// CEP:STATUS: complete
-    /// CEP:FAILURE: none
-    /// CEP:ASSUMES: none
-    /// CEP:COST: cold; constant time.
-    /// CEP:EVIDENCE: unit test rr_optimize::pipeline::tests::pipeline_verifies.
-    fn fns_mut(&mut self) -> &mut Vec<Function> {
-        &mut self.fns
-    }
-}
 
 #[cfg(test)]
 mod tests {

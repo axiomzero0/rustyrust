@@ -12,7 +12,7 @@
 use rr_hir::hir::*;
 use rr_hir::span::Span;
 use rr_thir::{FnSig, TExpr, TStmt, TypedFn, TypedProgram};
-use rr_traits::{Solver, Solution};
+use rr_traits::Solver;
 
 /// A semantic diagnostic.
 #[derive(Debug, Clone)]
@@ -21,6 +21,13 @@ pub struct TypeError {
     pub msg: String,
     /// Byte span of the offending region.
     pub span: Span,
+}
+
+/// Shared checking context passed through semantic functions.
+struct Ctx<'a> {
+    sigs: &'a [FnSig],
+    solver: &'a mut Solver,
+    errs: &'a mut Vec<TypeError>,
 }
 
 /// Reserved builtin callable of the runtime.
@@ -217,7 +224,7 @@ fn check_expr(e: &Expr, sigs: &[FnSig], vars: &[(String, Ty)], solver: &mut Solv
             }
             TExpr::Unary { op: *op, e: Box::new(inner), ty: t }
         }
-        Expr::Binary { op, l, r, span } => check_binary(op, l, r, *span, sigs, vars, solver, errs),
+        Expr::Binary { op, l, r, span } => check_binary(op, l, r, *span, vars, cx),
         Expr::Call { callee, args, .. } => check_call(callee, args, sigs, vars, solver, errs),
         Expr::If { cond, then, els, .. } => check_if(cond, then, els, sigs, vars, solver, errs),
         Expr::BlockExpr { b, .. } => {
@@ -236,19 +243,19 @@ fn check_expr(e: &Expr, sigs: &[FnSig], vars: &[(String, Ty)], solver: &mut Solv
 /// CEP:ASSUMES: none
 /// CEP:COST: cold; linear in operand size.
 /// CEP:EVIDENCE: unit test rr_typeck::tests::checks_types.
-fn check_binary(op: &BinOp, l: &Expr, r: &Expr, span: Span, sigs: &[FnSig], vars: &[(String, Ty)], solver: &mut Solver, errs: &mut Vec<TypeError>) -> TExpr {
-    let lv = check_expr(l, sigs, vars, solver, errs);
-    let rv = check_expr(r, sigs, vars, solver, errs);
+fn check_binary(op: &BinOp, l: &Expr, r: &Expr, span: Span, vars: &[(String, Ty)], cx: &mut Ctx) -> TExpr {
+    let lv = check_expr(l, cx.sigs, vars, cx.solver, cx.errs);
+    let rv = check_expr(r, cx.sigs, vars, cx.solver, cx.errs);
     let lt = lv.ty();
     let rt = rv.ty();
     let result = if op.is_arith() {
-        require(lt == Ty::I64 && rt == Ty::I64, "arithmetic operands must be i64", span, errs);
+        require(lt == Ty::I64 && rt == Ty::I64, "arithmetic operands must be i64", span, cx.errs);
         Ty::I64
     } else if op.is_cmp() {
-        require(lt == Ty::I64 && rt == Ty::I64, "comparison operands must be i64", span, errs);
+        require(lt == Ty::I64 && rt == Ty::I64, "comparison operands must be i64", span, cx.errs);
         Ty::Bool
     } else {
-        require(lt == Ty::Bool && rt == Ty::Bool, "logic operands must be bool", span, errs);
+        require(lt == Ty::Bool && rt == Ty::Bool, "logic operands must be bool", span, cx.errs);
         Ty::Bool
     };
     TExpr::Binary { op: *op, l: Box::new(lv), r: Box::new(rv), ty: result }
@@ -329,20 +336,6 @@ fn check_if(cond: &Expr, then: &Block, els: &Option<Box<Expr>>, sigs: &[FnSig], 
     }
 }
 
-// CEP:WHAT: Boxes the trailing value expression of one typed statement list.
-/// CEP:WHY: If nodes store their branch values separately from branch statements.
-/// CEP:STATUS: complete
-/// CEP:FAILURE: none
-/// CEP:ASSUMES: The trailing statement carries the value.
-/// CEP:COST: cold; constant time.
-/// CEP:EVIDENCE: unit test rr_typeck::tests::checks_types.
-fn boxed_texpr(t: Ty, ts: &[TStmt]) -> Box<TExpr> {
-    let _ = t;
-    match ts.last() {
-        Some(TStmt::Expr(e)) => Box::new(e.clone()),
-        _ => Box::new(TExpr::Unit),
-    }
-}
 
 /// CEP:WHAT: Returns the value type of one statement when it carries a value.
 /// CEP:WHY: Block values come from trailing expressions.
