@@ -1,0 +1,6 @@
+[package]
+name = "rr-traits"
+version = "0.1.0"
+edition = "2021"
+description = "Trait goal solving skeleton with memoization."
+license = "Apache-2.0"

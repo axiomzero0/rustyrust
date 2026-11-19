@@ -8,4 +8,8 @@ members = [
     "ir/lir",
     "ir/machine",
     "compiler/frontend",
+    "compiler/typeck",
+    "compiler/traits",
+    "compiler/borrowck",
+    "compiler/mir",
 ]

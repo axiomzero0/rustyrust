@@ -85,8 +85,13 @@ pub enum TExpr {
     Bool(bool),
     /// The unit value.
     Unit,
-    /// A local variable reference.
-    Var(String),
+    /// A local variable reference with its resolved type.
+    Var {
+        /// Variable name.
+        name: String,
+        /// Resolved type.
+        ty: Ty,
+    },
     /// A unary operation with its result type.
     Unary {
         /// Operator.
@@ -154,7 +159,8 @@ impl TExpr {
         match self {
             TExpr::Int(_) => Ty::I64,
             TExpr::Bool(_) => Ty::Bool,
-            TExpr::Unit | TExpr::Var(_) => Ty::Unit,
+            TExpr::Unit => Ty::Unit,
+            TExpr::Var { ty, .. } => *ty,
             TExpr::Unary { ty, .. } | TExpr::Binary { ty, .. } | TExpr::Call { ty, .. } => *ty,
             TExpr::If { ty, .. } | TExpr::Block { ty, .. } => *ty,
         }
@@ -179,5 +185,7 @@ mod tests {
         assert_eq!(e.ty(), Ty::I64);
         let b = TExpr::Block { stmts: Vec::new(), val: None, ty: Ty::Unit };
         assert_eq!(b.ty(), Ty::Unit);
+        let v = TExpr::Var { name: "x".into(), ty: Ty::I64 };
+        assert_eq!(v.ty(), Ty::I64);
     }
 }

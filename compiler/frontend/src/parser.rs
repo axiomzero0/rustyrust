@@ -314,6 +314,7 @@ impl<'a> Parser<'a> {
         let span = self.cur().span;
         if self.at_kw("let") {
             self.bump();
+            let _mut = self.eat_kw("mut");
             let name = self.parse_ident();
             let mut ty = None;
             if self.eat_punct(":") {

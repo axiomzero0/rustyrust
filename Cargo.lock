@@ -54,6 +54,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d902046e6a28a1e4c3cab97258a0ce11e994903f01c2d97a9447a0b3df85f4f6"
 
 [[package]]
+name = "rr-borrowck"
+version = "0.1.0"
+dependencies = [
+ "rr-hir",
+ "rr-thir",
+]
+
+[[package]]
 name = "rr-frontend"
 version = "0.1.0"
 dependencies = [
@@ -67,6 +75,17 @@ version = "0.1.0"
 [[package]]
 name = "rr-lir"
 version = "0.1.0"
+
+[[package]]
+name = "rr-lowering"
+version = "0.1.0"
+dependencies = [
+ "rr-frontend",
+ "rr-hir",
+ "rr-mir",
+ "rr-thir",
+ "rr-typeck",
+]
 
 [[package]]
 name = "rr-machine"
@@ -87,4 +106,18 @@ name = "rr-thir"
 version = "0.1.0"
 dependencies = [
  "rr-hir",
+]
+
+[[package]]
+name = "rr-traits"
+version = "0.1.0"
+
+[[package]]
+name = "rr-typeck"
+version = "0.1.0"
+dependencies = [
+ "rr-frontend",
+ "rr-hir",
+ "rr-thir",
+ "rr-traits",
 ]

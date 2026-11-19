@@ -1,0 +1,10 @@
+[package]
+name = "rr-borrowck"
+version = "0.1.0"
+edition = "2021"
+description = "Move and borrow analysis over THIR for the V0 subset."
+license = "Apache-2.0"
+
+[dependencies]
+rr-hir = { path = "../../ir/hir" }
+rr-thir = { path = "../../ir/thir" }

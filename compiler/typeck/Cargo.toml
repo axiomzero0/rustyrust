@@ -1,0 +1,14 @@
+[package]
+name = "rr-typeck"
+version = "0.1.0"
+edition = "2021"
+description = "Name resolution, signature collection, and type checking into THIR."
+license = "Apache-2.0"
+
+[dependencies]
+rr-hir = { path = "../../ir/hir" }
+rr-thir = { path = "../../ir/thir" }
+rr-traits = { path = "../../compiler/traits" }
+
+[dev-dependencies]
+rr-frontend = { path = "../frontend" }
