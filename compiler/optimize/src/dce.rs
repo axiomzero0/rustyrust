@@ -9,7 +9,7 @@
 // CEP:EVIDENCE: unit test rr_optimize::dce::tests::removes_dead_stores.
 #![deny(missing_docs)]
 use rr_certificates::{dead_obligation, Json};
-use rr_hir::hir::BinOp;
+use rr_hir::hir::{BinOp, Ty};
 use rr_mir::model::*;
 
 /// CEP:WHAT: Removes dead stores in one function and emits obligations.
@@ -163,7 +163,7 @@ mod tests {
     /// Value of the live store in the sample.
     const SAMPLE_LIVE: i64 = 2;
 
-/// CEP:WHAT: Verifies removal of a store whose local is never read.
+    /// CEP:WHAT: Verifies removal of a store whose local is never read.
     /// CEP:WHY: DCE is a level-1 optimization with certificate obligations.
     /// CEP:STATUS: complete
     /// CEP:FAILURE: Fails the test binary on regression.
