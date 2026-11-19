@@ -1,0 +1,6 @@
+[package]
+name = "rr-certificates"
+version = "0.1.0"
+edition = "2021"
+description = "Certificate format and minimal JSON codec for proof-carrying optimization."
+license = "Apache-2.0"

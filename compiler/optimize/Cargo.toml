@@ -1,0 +1,11 @@
+[package]
+name = "rr-optimize"
+version = "0.1.0"
+edition = "2021"
+description = "Certificate-producing MIR optimization passes."
+license = "Apache-2.0"
+
+[dependencies]
+rr-hir = { path = "../../ir/hir" }
+rr-mir = { path = "../../ir/mir" }
+rr-certificates = { path = "../../checker/certificates" }

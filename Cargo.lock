@@ -62,6 +62,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "rr-certificates"
+version = "0.1.0"
+
+[[package]]
 name = "rr-frontend"
 version = "0.1.0"
 dependencies = [
@@ -102,6 +106,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rr-optimize"
+version = "0.1.0"
+dependencies = [
+ "rr-certificates",
+ "rr-hir",
+ "rr-mir",
+]
+
+[[package]]
 name = "rr-thir"
 version = "0.1.0"
 dependencies = [
@@ -120,4 +133,14 @@ dependencies = [
  "rr-hir",
  "rr-thir",
  "rr-traits",
+]
+
+[[package]]
+name = "rr-verifier"
+version = "0.1.0"
+dependencies = [
+ "rr-certificates",
+ "rr-hir",
+ "rr-mir",
+ "rr-optimize",
 ]

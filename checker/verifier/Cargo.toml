@@ -1,0 +1,14 @@
+[package]
+name = "rr-verifier"
+version = "0.1.0"
+edition = "2021"
+description = "Independent trusted checker of optimization certificates."
+license = "Apache-2.0"
+
+[dependencies]
+rr-hir = { path = "../../ir/hir" }
+rr-mir = { path = "../../ir/mir" }
+rr-certificates = { path = "../certificates" }
+
+[dev-dependencies]
+rr-optimize = { path = "../../compiler/optimize" }

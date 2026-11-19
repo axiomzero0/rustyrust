@@ -12,4 +12,7 @@ members = [
     "compiler/traits",
     "compiler/borrowck",
     "compiler/mir",
+    "compiler/optimize",
+    "checker/certificates",
+    "checker/verifier",
 ]
