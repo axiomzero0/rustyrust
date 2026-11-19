@@ -155,6 +155,9 @@ fn operand_locals(o: &Operand) -> Vec<LocalId> {
 mod tests {
     use super::*;
 
+    /// Invalid block target used by the rejection test.
+    const BAD_TARGET: usize = 9;
+
     /// Sample valid constant used to build test programs.
     const SAMPLE_VALUE: i64 = 3;
 

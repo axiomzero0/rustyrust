@@ -172,6 +172,9 @@ impl TExpr {
 mod tests {
     use super::*;
 
+    /// Sample literal used by the type presence test.
+    const SAMPLE_LITERAL: i64 = 3;
+
     /// CEP:WHAT: Verifies that typed nodes carry their types.
     /// CEP:WHY: Lowering depends on node-level types.
     /// CEP:STATUS: complete
