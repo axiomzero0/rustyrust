@@ -186,8 +186,9 @@ impl FnBuilder {
         }
     }
 
-    /// CEP:WHAT: Lowers one statement.
+    /// CEP:WHAT: Lowers one statement into MIR statements and terminators.
     /// CEP:WHY: Statements introduce assignments, control flow, and returns.
+    /// CEP:ID: IR-a04
     /// CEP:STATUS: complete
     /// CEP:FAILURE: none
     /// CEP:ASSUMES: none
