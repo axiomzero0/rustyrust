@@ -54,7 +54,6 @@ fn sig_params(p: &TypedProgram, f: &TypedFn) -> Vec<Ty> {
 fn lower_fn(f: &TypedFn, param_tys: Vec<Ty>) -> Function {
     let mut b = FnBuilder {
         name: f.name.clone(),
-        ret: f.ret,
         locals: vec![Local { ty: f.ret, is_immutable: true }],
         var_map: Vec::new(),
         params: Vec::new(),
@@ -77,7 +76,6 @@ fn lower_fn(f: &TypedFn, param_tys: Vec<Ty>) -> Function {
 /// The per-function lowering state.
 struct FnBuilder {
     name: String,
-    ret: Ty,
     locals: Vec<Local>,
     var_map: Vec<(String, LocalId)>,
     params: Vec<LocalId>,

@@ -26,7 +26,6 @@ pub struct TypeError {
 /// Shared checking context passed through semantic functions.
 struct Ctx<'a> {
     sigs: &'a [FnSig],
-    solver: &'a mut Solver,
     errs: &'a mut Vec<TypeError>,
 }
 
@@ -53,6 +52,7 @@ pub fn check_program(p: &Program) -> Result<TypedProgram, Vec<TypeError>> {
         fns.push(check_fn(f, &sigs, &mut solver, &mut errs));
     }
     check_main(p, &mut errs);
+    debug_assert_eq!(solver.memo_len(), 0, "V0 programs emit no trait goals");
     if errs.is_empty() {
         Ok(TypedProgram { sigs, fns })
     } else {
@@ -112,7 +112,8 @@ fn check_main(p: &Program, errs: &mut Vec<TypeError>) {
 /// CEP:EVIDENCE: unit test rr_typeck::tests::checks_types.
 fn check_fn(f: &FnDef, sigs: &[FnSig], solver: &mut Solver, errs: &mut Vec<TypeError>) -> TypedFn {
     let mut vars: Vec<(String, Ty)> = f.params.iter().map(|x| (x.name.name.clone(), x.ty)).collect();
-    let stmts = check_block(&f.body, sigs, &mut vars, solver, errs);
+    let mut cx = Ctx { sigs, errs };
+    let stmts = check_block(&f.body, &mut vars, &mut cx);
     TypedFn { name: f.name.name.clone(), params: f.params.iter().map(|x| x.name.name.clone()).collect(), ret: f.ret, body: stmts }
 }
 
@@ -123,10 +124,10 @@ fn check_fn(f: &FnDef, sigs: &[FnSig], solver: &mut Solver, errs: &mut Vec<TypeE
 /// CEP:ASSUMES: none
 /// CEP:COST: cold; linear in block size.
 /// CEP:EVIDENCE: unit test rr_typeck::tests::checks_types.
-fn check_block(b: &Block, sigs: &[FnSig], vars: &mut Vec<(String, Ty)>, solver: &mut Solver, errs: &mut Vec<TypeError>) -> Vec<TStmt> {
+fn check_block(b: &Block, vars: &mut Vec<(String, Ty)>, cx: &mut Ctx) -> Vec<TStmt> {
     let mut out = Vec::new();
     for s in b.stmts.iter() {
-        out.extend(check_stmt(s, sigs, vars, solver, errs));
+        out.extend(check_stmt(s, vars, cx));
     }
     out
 }
@@ -139,28 +140,28 @@ fn check_block(b: &Block, sigs: &[FnSig], vars: &mut Vec<(String, Ty)>, solver: 
 /// CEP:ASSUMES: none
 /// CEP:COST: cold; linear in statement size.
 /// CEP:EVIDENCE: doc file docs/functions/FE/FE-a06.md; unit test checks_types.
-fn check_stmt(s: &Stmt, sigs: &[FnSig], vars: &mut Vec<(String, Ty)>, solver: &mut Solver, errs: &mut Vec<TypeError>) -> Vec<TStmt> {
+fn check_stmt(s: &Stmt, vars: &mut Vec<(String, Ty)>, cx: &mut Ctx) -> Vec<TStmt> {
     match s {
         Stmt::Let { name, ty, init, span } => {
-            let it = init.as_ref().map(|e| check_expr(e, sigs, vars, solver, errs));
+            let it = init.as_ref().map(|e| check_expr(e, vars, cx));
             let declared = *ty;
             let inferred = it.as_ref().map(|e| e.ty());
             let final_ty = match (declared, inferred) {
                 (Some(d), Some(i)) if d != i => {
-                    errs.push(TypeError { msg: format!("type mismatch in let {}: expected {} found {}", name.name, d.name(), i.name()), span: *span });
+                    cx.errs.push(TypeError { msg: format!("type mismatch in let {}: expected {} found {}", name.name, d.name(), i.name()), span: *span });
                     None
                 }
                 (Some(d), _) => Some(d),
                 (None, Some(i)) => Some(i),
                 (None, None) => {
-                    errs.push(TypeError { msg: format!("let {} needs a type annotation or initializer", name.name), span: *span });
+                    cx.errs.push(TypeError { msg: format!("let {} needs a type annotation or initializer", name.name), span: *span });
                     None
                 }
             };
             match final_ty {
                 Some(t) => {
                     if vars.iter().any(|(n, _)| n == &name.name) {
-                        errs.push(TypeError { msg: format!("redefinition of {}", name.name), span: name.span });
+                        cx.errs.push(TypeError { msg: format!("redefinition of {}", name.name), span: name.span });
                     }
                     vars.push((name.name.clone(), t));
                     vec![TStmt::Let { name: name.name.clone(), ty: t, init: it }]
@@ -169,27 +170,27 @@ fn check_stmt(s: &Stmt, sigs: &[FnSig], vars: &mut Vec<(String, Ty)>, solver: &m
             }
         }
         Stmt::Assign { place, value, span } => {
-            let v = check_expr(value, sigs, vars, solver, errs);
+            let v = check_expr(value, vars, cx);
             match vars.iter().find(|(n, _)| n == &place.name) {
                 None => {
-                    errs.push(TypeError { msg: format!("unknown variable {}", place.name), span: *span });
+                    cx.errs.push(TypeError { msg: format!("unknown variable {}", place.name), span: *span });
                     Vec::new()
                 }
                 Some((_, t)) if *t != v.ty() => {
-                    errs.push(TypeError { msg: format!("type mismatch assigning to {}: expected {} found {}", place.name, t.name(), v.ty().name()), span: *span });
+                    cx.errs.push(TypeError { msg: format!("type mismatch assigning to {}: expected {} found {}", place.name, t.name(), v.ty().name()), span: *span });
                     Vec::new()
                 }
                 Some(_) => vec![TStmt::Assign { place: place.name.clone(), value: v }],
             }
         }
-        Stmt::Expr { e, .. } => vec![TStmt::Expr(check_expr(e, sigs, vars, solver, errs))],
-        Stmt::Return { e, .. } => vec![TStmt::Return(e.as_ref().map(|x| check_expr(x, sigs, vars, solver, errs)))],
+        Stmt::Expr { e, .. } => vec![TStmt::Expr(check_expr(e, vars, cx))],
+        Stmt::Return { e, .. } => vec![TStmt::Return(e.as_ref().map(|x| check_expr(x, vars, cx)))],
         Stmt::While { cond, body, .. } => {
-            let c = check_expr(cond, sigs, vars, solver, errs);
+            let c = check_expr(cond, vars, cx);
             if c.ty() != Ty::Bool {
-                errs.push(TypeError { msg: "while condition must be bool".into(), span: cond_span(cond) });
+                cx.errs.push(TypeError { msg: "while condition must be bool".into(), span: cond_span(cond) });
             }
-            let bs = check_block(body, sigs, vars, solver, errs);
+            let bs = check_block(body, vars, cx);
             vec![TStmt::While { cond: c, body: bs }]
         }
     }
@@ -203,7 +204,7 @@ fn check_stmt(s: &Stmt, sigs: &[FnSig], vars: &mut Vec<(String, Ty)>, solver: &m
 /// CEP:ASSUMES: Trait solving reports zero goals for V0 programs.
 /// CEP:COST: cold; linear in expression size.
 /// CEP:EVIDENCE: doc file docs/functions/FE/FE-a07.md; unit test checks_types.
-fn check_expr(e: &Expr, sigs: &[FnSig], vars: &[(String, Ty)], solver: &mut Solver, errs: &mut Vec<TypeError>) -> TExpr {
+fn check_expr(e: &Expr, vars: &[(String, Ty)], cx: &mut Ctx) -> TExpr {
     match e {
         Expr::Int { value, .. } => TExpr::Int(*value),
         Expr::Bool { value, .. } => TExpr::Bool(*value),
@@ -211,25 +212,25 @@ fn check_expr(e: &Expr, sigs: &[FnSig], vars: &[(String, Ty)], solver: &mut Solv
         Expr::Var { name } => match vars.iter().find(|(n, _)| n == &name.name) {
             Some((_, t)) => var_expr(&name.name, *t),
             None => {
-                errs.push(TypeError { msg: format!("unknown variable {}", name.name), span: name.span });
+                cx.errs.push(TypeError { msg: format!("unknown variable {}", name.name), span: name.span });
                 TExpr::Unit
             }
         },
         Expr::Unary { op, e, .. } => {
-            let inner = check_expr(e, sigs, vars, solver, errs);
+            let inner = check_expr(e, vars, cx);
             let t = inner.ty();
             let ok = matches!((op, t), (UnOp::Neg, Ty::I64) | (UnOp::Not, Ty::Bool));
             if !ok {
-                errs.push(TypeError { msg: "unary operand type mismatch".into(), span: name_span_unary(e) });
+                cx.errs.push(TypeError { msg: "unary operand type mismatch".into(), span: name_span_unary(e) });
             }
             TExpr::Unary { op: *op, e: Box::new(inner), ty: t }
         }
         Expr::Binary { op, l, r, span } => check_binary(op, l, r, *span, vars, cx),
-        Expr::Call { callee, args, .. } => check_call(callee, args, sigs, vars, solver, errs),
-        Expr::If { cond, then, els, .. } => check_if(cond, then, els, sigs, vars, solver, errs),
+        Expr::Call { callee, args, .. } => check_call(callee, args, vars, cx),
+        Expr::If { cond, then, els, .. } => check_if(cond, then, els, vars, cx),
         Expr::BlockExpr { b, .. } => {
             let mut vars2 = vars.to_vec();
-            let stmts = check_block(b, sigs, &mut vars2, solver, errs);
+            let stmts = check_block(b, &mut vars2, cx);
             let ty = stmts.last().and_then(stmt_val_expr).map(|x| x.ty()).unwrap_or(Ty::Unit);
             TExpr::Block { stmts, val: None, ty }
         }
@@ -244,8 +245,8 @@ fn check_expr(e: &Expr, sigs: &[FnSig], vars: &[(String, Ty)], solver: &mut Solv
 /// CEP:COST: cold; linear in operand size.
 /// CEP:EVIDENCE: unit test rr_typeck::tests::checks_types.
 fn check_binary(op: &BinOp, l: &Expr, r: &Expr, span: Span, vars: &[(String, Ty)], cx: &mut Ctx) -> TExpr {
-    let lv = check_expr(l, cx.sigs, vars, cx.solver, cx.errs);
-    let rv = check_expr(r, cx.sigs, vars, cx.solver, cx.errs);
+    let lv = check_expr(l, vars, cx);
+    let rv = check_expr(r, vars, cx);
     let lt = lv.ty();
     let rt = rv.ty();
     let result = if op.is_arith() {
@@ -268,28 +269,28 @@ fn check_binary(op: &BinOp, l: &Expr, r: &Expr, span: Span, vars: &[(String, Ty)
 /// CEP:ASSUMES: The print builtin has the documented signature.
 /// CEP:COST: cold; linear in arguments.
 /// CEP:EVIDENCE: unit test rr_typeck::tests::checks_types.
-fn check_call(callee: &Ident, args: &[Expr], sigs: &[FnSig], vars: &[(String, Ty)], solver: &mut Solver, errs: &mut Vec<TypeError>) -> TExpr {
-    let checked: Vec<TExpr> = args.iter().map(|a| check_expr(a, sigs, vars, solver, errs)).collect();
-    let ret = match sigs.iter().find(|s| s.name == callee.name) {
+fn check_call(callee: &Ident, args: &[Expr], vars: &[(String, Ty)], cx: &mut Ctx) -> TExpr {
+    let checked: Vec<TExpr> = args.iter().map(|a| check_expr(a, vars, cx)).collect();
+    let ret = match cx.sigs.iter().find(|s| s.name == callee.name) {
         Some(s) => {
             if s.params.len() != checked.len() {
-                errs.push(TypeError { msg: format!("call to {} expects {} arguments found {}", callee.name, s.params.len(), checked.len()), span: callee.span });
+                cx.errs.push(TypeError { msg: format!("call to {} expects {} arguments found {}", callee.name, s.params.len(), checked.len()), span: callee.span });
             }
             for (i, (pt, a)) in s.params.iter().zip(checked.iter()).enumerate() {
                 if *pt != a.ty() {
-                    errs.push(TypeError { msg: format!("argument {} type mismatch in call to {}", i + 1, callee.name), span: callee.span });
+                    cx.errs.push(TypeError { msg: format!("argument {} type mismatch in call to {}", i + 1, callee.name), span: callee.span });
                 }
             }
             s.ret
         }
         None if callee.name == BUILTIN_PRINT => {
             if checked.len() != PRINT_ARITY {
-                errs.push(TypeError { msg: format!("{} expects one i64 argument", BUILTIN_PRINT), span: callee.span });
+                cx.errs.push(TypeError { msg: format!("{} expects one i64 argument", BUILTIN_PRINT), span: callee.span });
             }
             Ty::Unit
         }
         None => {
-            errs.push(TypeError { msg: format!("unknown function {}", callee.name), span: callee.span });
+            cx.errs.push(TypeError { msg: format!("unknown function {}", callee.name), span: callee.span });
             Ty::Unit
         }
     };
@@ -305,29 +306,29 @@ fn check_call(callee: &Ident, args: &[Expr], sigs: &[FnSig], vars: &[(String, Ty
 /// CEP:ASSUMES: none
 /// CEP:COST: cold; linear in branch size.
 /// CEP:EVIDENCE: unit test rr_typeck::tests::checks_types.
-fn check_if(cond: &Expr, then: &Block, els: &Option<Box<Expr>>, sigs: &[FnSig], vars: &[(String, Ty)], solver: &mut Solver, errs: &mut Vec<TypeError>) -> TExpr {
-    let c = check_expr(cond, sigs, vars, solver, errs);
+fn check_if(cond: &Expr, then: &Block, els: &Option<Box<Expr>>, vars: &[(String, Ty)], cx: &mut Ctx) -> TExpr {
+    let c = check_expr(cond, vars, cx);
     if c.ty() != Ty::Bool {
-        errs.push(TypeError { msg: "if condition must be bool".into(), span: cond_span(cond) });
+        cx.errs.push(TypeError { msg: "if condition must be bool".into(), span: cond_span(cond) });
     }
     let mut tvars = vars.to_vec();
-    let ts = check_block(then, sigs, &mut tvars, solver, errs);
+    let ts = check_block(then, &mut tvars, cx);
     let tval = ts.last().and_then(stmt_val_expr);
     let (es, eval) = match els {
         None => (Vec::new(), None),
         Some(e) => match e.as_ref() {
             Expr::BlockExpr { b, .. } => {
                 let mut evars = vars.to_vec();
-                let s = check_block(b, sigs, &mut evars, solver, errs);
+                let s = check_block(b, &mut evars, cx);
                 let ev = s.last().and_then(stmt_val_expr);
                 (s, ev)
             }
-            other => (Vec::new(), Some(check_expr(other, sigs, vars, solver, errs))),
+            other => (Vec::new(), Some(check_expr(other, vars, cx))),
         },
     };
     if let (Some(tv), Some(ev)) = (tval.as_ref(), eval.as_ref()) {
         if tv.ty() != ev.ty() {
-            errs.push(TypeError { msg: "if branches have different types".into(), span: Span::new(0, 0) });
+            cx.errs.push(TypeError { msg: "if branches have different types".into(), span: Span::new(0, 0) });
         }
     }
     let ty = tval.as_ref().or(eval.as_ref()).map(|x| x.ty()).unwrap_or(Ty::Unit);
